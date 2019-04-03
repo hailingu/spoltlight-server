@@ -1,0 +1,56 @@
+# The data exchange protocol spotlight-server
+
+spotlight-server accepts a job flow expressed in json format. The simplest job flow is shown under below.
+
+    id: flow id. It is constructed from the project name, timestamp, the flow index in today flow sequence. 
+    rid: running operator id. It is built from the flow id
+    deps: the dependencies of the operator.
+
+    {
+        "flow": {
+            "name": "simplest_flow",
+            "id": "",
+            "backend": "spark",
+            "operators": [
+                {
+                    "name": "IrisMultiClassData",
+                    "op_index": 0,
+                    "rid": "",
+                    "params": {
+                        
+                    },
+                    "deps": [
+                        
+                    ]
+                },
+                {
+                    "name": "RemoveDuplicatedRows",
+                    "rid": "",
+                    "op_index": 1,
+                    "params": {
+                        "selected_columns": [
+                            
+                        ]
+                    },
+                    "deps": [
+                        0
+                    ]
+                    
+                },
+                {
+                    "name": "LinearRegression",
+                    "op_index": 2,
+                    "rid": "",
+                    "params": {
+                        "regulization": "",
+                        "regulization_weight": 0,
+                        "max_iteraion_num": 10
+                    },
+                    "deps": [
+                        1
+                    ]
+                }
+            ]
+        }
+    }
+

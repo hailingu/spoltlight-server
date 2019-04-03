@@ -1,7 +1,10 @@
 from flask import Flask
-import requests
+from flask_cors import CORS
+from flask import request
 import operators.operator
+from operators.spark.spark_flow import SparkFlow
 app = Flask(__name__)
+CORS(app, support_credentials=True)
 
 url = 'http://localhost:8081'
 payload = 'action=login&username=azkaban&password=azkaban'
@@ -10,13 +13,14 @@ headers = {
     'X-Requested-With': 'XMLHttpRequest'
 }
 
-
-@app.route('/')
+@app.route('/', methods=['POST'])
 def hello_flask():
-    a = operators.operator.Operator()
-    print(a)
-    r = requests.post(url, data=payload, headers=headers)
-    return r.content
+    if request.method == 'POST':
+        # print(request.json)
+        a = SparkFlow(request.json)
+        a.generate()
+        return 'success'
+    return 'failed'
 
 def create_azkaban_job(job_id):
     return 0

@@ -1,11 +1,12 @@
 class Flow:
     '''A splotlight job flow'''
 
-    def __init__(self, backend):
+    def __init__(self, backend, index):
         self.id = None
         self.backend = backend
         self.flow_json = None
         self.scheduler = None
+        self.index = index
 
     def parse_flow(self):
         if self.backend == 'default':
