@@ -7,7 +7,7 @@ from pyspark.sql import SparkSession
 
 if __name__ == "__main__":
     """
-        Usage: remove_duplicated_rows input output columns 
+        Usage: remove_duplicated_rows.py input output columns 
     """
     spark = SparkSession\
         .builder\
