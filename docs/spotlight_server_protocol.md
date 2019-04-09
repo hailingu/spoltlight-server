@@ -17,7 +17,9 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
                     "op_index": 0,
                     "rid": "",
                     "params": {
-                        
+                        "input": "datasets/sample/iris.txt",
+                        "file_format": "csv",
+                        "header": "true"
                     },
                     "deps": [
                         
@@ -53,4 +55,12 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
             ]
         }
     }
+
+
+
+
+curl -k --get --data "session.id=223521ae-e92a-4fcc-a45a-bc6a4815c9d3&delete=true&project=test" http://localhost:8081/manager
+curl -k -X POST --data "session.id=223521ae-e92a-4fcc-a45a-bc6a4815c9d3&name=test&description=test" http://localhost:8081/manager?action=create
+
+curl -k -i -H "Content-Type: multipart/mixed" -X POST --form 'session.id=e6bb43ca-6daf-4dfe-a0a7-81d7a2bb2190' --form 'ajax=upload' --form 'file=@Archive.zip;type=application/zip' --form 'project=test;type/plain' http://localhost:8081/manager
 

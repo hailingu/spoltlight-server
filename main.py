@@ -6,12 +6,7 @@ from operators.spark.spark_flow import SparkFlow
 app = Flask(__name__)
 CORS(app, support_credentials=True)
 
-url = 'http://localhost:8081'
-payload = 'action=login&username=azkaban&password=azkaban'
-headers = {
-    'Content-type': 'application/x-www-form-urlencoded',
-    'X-Requested-With': 'XMLHttpRequest'
-}
+
 
 @app.route('/', methods=['POST'])
 def hello_flask():
