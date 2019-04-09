@@ -33,9 +33,9 @@ class SparkFlow(Flow):
         azkaban_flow.close()
         os.system('cd ' + self.working_dir + '/azkaban/&&zip -r ' + self.id + '.zip .&&mv ' + self.id + '.zip ..')
         azkabanClient.login()
-        azkabanClient.create_project('test2', 'test')
-        azkabanClient.upload(self.working_dir + '/' + self.id, 'test2')        
-        azkabanClient.execute_flow('test2', self.id)
+        azkabanClient.create_project('test3', 'test')
+        azkabanClient.upload(self.working_dir + '/' + self.id, 'test3')        
+        azkabanClient.execute_flow('test3', self.id)
         
         return None
 
