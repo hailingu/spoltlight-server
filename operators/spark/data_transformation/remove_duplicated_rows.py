@@ -7,16 +7,17 @@ from pyspark.sql import SparkSession
 
 if __name__ == "__main__":
     """
-        Usage: remove_duplicated_rows input columns output
+        Usage: remove_duplicated_rows input output columns 
     """
     spark = SparkSession\
         .builder\
         .appName("Remove Duplicated Rows")\
         .getOrCreate()
+    
+    input_path = sys.argv[1]
+    output_path = sys.argv[2]
+    columns = sys.argv[3].split(' ')
+    data = spark.read.parquet(input_path)
 
-    data = spark.read.parquet(sys.argv[1])
-    columns = sys.argv[2].split(' ')
-    output = sys.argv[3]
-
-    data.dropDuplicates(columns).write.format('parquet').save(output)
+    data.dropDuplicates(columns).write.format('parquet').save(output_path)
     spark.stop()

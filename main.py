@@ -11,9 +11,9 @@ CORS(app, support_credentials=True)
 @app.route('/', methods=['POST'])
 def hello_flask():
     if request.method == 'POST':
-        # print(request.json)
-        a = SparkFlow(request.json)
-        a.generate()
+        flow = SparkFlow(request.json)
+        flow.init_azkaban_flow()
+        flow.generate_azkaban_flow()
         return 'success'
     return 'failed'
 
