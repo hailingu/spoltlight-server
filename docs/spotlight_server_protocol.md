@@ -14,7 +14,7 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
             "operators": [
                 {
                     "name": "IrisMultiClassData",
-                    "op-index": 0,
+                    "op-index": "job0",
                     "rid": "",
                     "op-category": "data-import",
                     "op-name": "import-csv",
@@ -28,20 +28,20 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
                 {
                     "name": "RemoveDuplicatedRows",
                     "rid": "",
-                    "op-index": 1,
+                    "op-index": "job1",
                     "op-category": "data-trasformation",
                     "op-name": "remove-duplicated-rows",
                     "params": {
                         "columns": 'ID SepalLength SepalWidth PetalLength PetalWidth Species'
                     },
                     "deps": [
-                        0
+                        "job0"
                     ]
                     
                 },
                 {
-                    "name": "LinearRegression",
-                    "op-index": 2,
+                    "name": "RandomForest",
+                    "op-index": "job2",
                     "rid": "",
                     "params": {
                         "regulization": "",
@@ -49,7 +49,7 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
                         "max_iteraion_num": 10
                     },
                     "deps": [
-                        1
+                        "job1"
                     ]
                 }
             ]
@@ -57,5 +57,54 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
     }
 
 
+    This is a default backend json Operation
 
-
+   {
+        "flow": {
+            "name": "simplest_flow",
+            "id": "",
+            "backend": "default",
+            "operators": [
+                {
+                    "name": "IrisMultiClassData",
+                    "op-index": "job0",
+                    "rid": "",
+                    "op-category": "data-import",
+                    "op-name": "import-csv",
+                    "params": {
+                        "input": "datasets/sample/iris_duplicated.txt",
+                    },
+                    "deps": [
+                        
+                    ]
+                },
+                {
+                    "name": "RemoveDuplicatedRows",
+                    "rid": "",
+                    "op-index": "job1",
+                    "op-category": "data-trasformation",
+                    "op-name": "remove-duplicated-rows",
+                    "params": {
+                        "columns": 'ID SepalLength SepalWidth PetalLength PetalWidth Species'
+                    },
+                    "deps": [
+                        "job0"
+                    ]
+                    
+                },
+                {
+                    "name": "RandomForest",
+                    "op-index": "job2",
+                    "rid": "",
+                    "params": {
+                        "regulization": "",
+                        "regulization_weight": 0,
+                        "max_iteraion_num": 10
+                    },
+                    "deps": [
+                        "job1"
+                    ]
+                }
+            ]
+        }
+    }

@@ -5,6 +5,7 @@ from operators.spark.utils.azkaban_flow_helper import AzkabanFlowReadAndWriteHel
 from operators.spark.utils.azkaban_client import azkabanClient
 import os
 
+
 class SparkFlow(Flow):
     '''A spark flow, it use the azkaban as schedule.'''
 
@@ -12,10 +13,14 @@ class SparkFlow(Flow):
         self.flow_json = flow_json
         self.backend = 'spark'
         self.scheduler = 'azkaban'
-        self.id = str(idGenerator.id_generator())
+        self.id = idGenerator.id_generator()
         self.working_dir = os.getcwd() + '/' + self.id + '/'
         self.__op_output_list = {}
         self.operators = self.__flow_parser()
+
+    def run(self):
+        self.init_azkaban_flow()
+        self.generate_azkaban_flow()
  
     def init_azkaban_flow(self):
         mkdir(self.working_dir)
@@ -33,11 +38,11 @@ class SparkFlow(Flow):
         azkaban_flow.close()
         os.system('cd ' + self.working_dir + '/azkaban/&&zip -r ' + self.id + '.zip .&&mv ' + self.id + '.zip ..')
         azkabanClient.login()
-        azkabanClient.create_project('test3', 'test')
-        azkabanClient.upload(self.working_dir + '/' + self.id, 'test3')        
-        azkabanClient.execute_flow('test3', self.id)
+        azkabanClient.create_project('splotlight-project', 'spotlight-project')
+        azkabanClient.upload(self.working_dir + '/' + self.id, 'splotlight-project')        
+        azkabanClient.execute_flow('splotlight-project', self.id)
         
-        return None
+        return self.id
 
     def __flow_parser(self):
         operator_pending_list = {}
