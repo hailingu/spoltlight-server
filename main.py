@@ -3,6 +3,7 @@ from flask_cors import CORS
 from flask import request
 import operators.operator
 from operators.spark.spark_flow import SparkFlow
+from flow_manager import flowManager
 app = Flask(__name__)
 CORS(app, support_credentials=True)
 
@@ -11,9 +12,11 @@ CORS(app, support_credentials=True)
 @app.route('/', methods=['POST'])
 def hello_flask():
     if request.method == 'POST':
-        flow = SparkFlow(request.json)
-        flow.init_azkaban_flow()
-        flow.generate_azkaban_flow()
+        # flow = SparkFlow(request.json)
+        # flow.init_azkaban_flow()
+        # flow.generate_azkaban_flow()
+        flow_id = flowManager.add_flow(request.json)
+        flowManager.run_flow(flow_id)
         return 'success'
     return 'failed'
 
