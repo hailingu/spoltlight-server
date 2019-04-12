@@ -9,13 +9,12 @@ CORS(app, support_credentials=True)
 
 
 @app.route('/', methods=['POST'])
-def hello_flask():
+def splotlight():
     if request.method == 'POST':
         flow_id = flowManager.add_flow(request.json)
         flowManager.run_flow(flow_id)
         return 'success'
     return 'failed'
-
 
 if __name__ == '__main__':
     app.debug = True
