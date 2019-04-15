@@ -5,7 +5,7 @@ from operators.scikitlearn.data_import.data_import_manager import dataImportOper
 from operators.scikitlearn.data_transformation.data_transformation_manager import dataTransformationOperatorManager
 from operators.scikitlearn.machine_learning.machine_learning_manager import machineLearningOperatorManager
 
-class ScikitlearnOperatorManager(OperatorManager, metaclass=Singleton):
+class ScikitlearnOperatorManager(OperatorManager):
     '''A scikit learn operator manager'''
 
     def __init__(self):

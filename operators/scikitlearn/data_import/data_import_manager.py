@@ -3,7 +3,7 @@ from utils.utils import Singleton
 
 from operators.scikitlearn.data_import.import_csv import ImportCSV
 
-class DataImportOperatorManager(OperatorManager, metaclass=Singleton):
+class DataImportOperatorManager(OperatorManager):
     '''A data import operator manager'''
 
     MANAGER_NAME = 'data-import'
@@ -15,7 +15,7 @@ class DataImportOperatorManager(OperatorManager, metaclass=Singleton):
         return None
 
     def register_operator(self, operator_class):
-        self.operators[operator_class.op_name, operator_class]
+        self.operators[operator_class.OP_NAME] = operator_class
 
     def get_manager(self, manager_name):
         return None
@@ -24,4 +24,4 @@ class DataImportOperatorManager(OperatorManager, metaclass=Singleton):
         return self.operators[op_name]
 
 dataImportOperatorManager = DataImportOperatorManager()
-dataImportOperatorManager.register_operator(ImportCSV.OP_NAME, ImportCSV)
+dataImportOperatorManager.register_operator(ImportCSV)

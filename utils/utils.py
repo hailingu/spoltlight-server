@@ -13,9 +13,9 @@ class Singleton(type):
     _instance = {}
 
     def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        if cls not in cls._instance:
+            cls._instance[cls] = super(Singleton, cls).__call__(*args, **kwargs)
         else:
-            cls._instances[cls].__init__(*args, **kwargs)
+            cls._instance[cls].__init__(*args, **kwargs)
     
-        return cls._instances[cls]
+        return cls._instance[cls]

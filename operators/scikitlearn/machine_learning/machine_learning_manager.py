@@ -3,7 +3,7 @@ from utils.utils import Singleton
 
 from operators.scikitlearn.machine_learning.model.classification.random_forest import RandomForest
 
-class MachineLearningOperatorManager(OperatorManager, metaclass=Singleton):
+class MachineLearningOperatorManager(OperatorManager):
     '''A machine learning operator manager'''
 
     MANAGER_NAME = 'machine-learning'
@@ -15,7 +15,7 @@ class MachineLearningOperatorManager(OperatorManager, metaclass=Singleton):
         return None
 
     def register_operator(self, operator_class):
-        self.operators[operator_class.op_name, operator_class]
+        self.operators[operator_class.OP_NAME] = operator_class
 
     def get_manager(self, manager_name):
         return None
@@ -24,4 +24,4 @@ class MachineLearningOperatorManager(OperatorManager, metaclass=Singleton):
         return self.operators[op_name]
 
 machineLearningOperatorManager = MachineLearningOperatorManager()
-machineLearningOperatorManager.register_operator(RandomForest.OP_NAME, RandomForest)
+machineLearningOperatorManager.register_operator(RandomForest)
