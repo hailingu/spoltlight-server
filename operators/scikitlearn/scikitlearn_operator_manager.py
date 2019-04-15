@@ -23,7 +23,7 @@ class ScikitlearnOperatorManager(OperatorManager, metaclass=Singleton):
     def get_operator(self, op_name):
         return None
 
-ScikitlearnOperatorManager = ScikitlearnOperatorManager()
-ScikitlearnOperatorManager.register_manager(dataImportOperatorManager)
-ScikitlearnOperatorManager.register_manager(dataTransformationOperatorManager)
-ScikitlearnOperatorManager.register_manager(machineLearningOperatorManager)
+scikitlearnOperatorManager = ScikitlearnOperatorManager()
+scikitlearnOperatorManager.register_manager(dataImportOperatorManager)
+scikitlearnOperatorManager.register_manager(dataTransformationOperatorManager)
+scikitlearnOperatorManager.register_manager(machineLearningOperatorManager)
