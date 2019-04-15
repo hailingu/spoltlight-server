@@ -13,7 +13,7 @@ class SparkFlow(Flow):
         self.flow_json = flow_json
         self.backend = 'spark'
         self.scheduler = 'azkaban'
-        self.id = idGenerator.id_generator()
+        self.id = idGenerator()
         self.working_dir = os.getcwd() + '/' + self.id + '/'
         self.__op_output_list = {}
         self.operators = self.__flow_parser()

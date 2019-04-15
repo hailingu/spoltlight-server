@@ -1,6 +1,8 @@
 import time
 
-class IdGenerator:
+from utils.utils import Singleton
+
+class IdGenerator(metaclass=Singleton):
     '''spotlight id generator class'''
     
     def __init__(self):
@@ -14,5 +16,8 @@ class IdGenerator:
             self.index = 0
         self.index = self.index + 1
         return 'spotlight-flow-' + str(int(time.time()) * 1000) + "-" + str(self.index)
+
+    def __call__(self, *args, **kwargs):
+        return self.id_generator()
 
 idGenerator = IdGenerator()

@@ -63,7 +63,7 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
         "flow": {
             "name": "simplest_flow",
             "id": "",
-            "backend": "default",
+            "backend": "scikitlearn",
             "operators": [
                 {
                     "name": "IrisMultiClassData",
@@ -85,24 +85,64 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
                     "op-category": "data-trasformation",
                     "op-name": "remove-duplicated-rows",
                     "params": {
-                        "columns": 'ID SepalLength SepalWidth PetalLength PetalWidth Species'
+                        "columns": 'ID SepalLength SepalWidth PetalLength PetalWidth Species',
                     },
                     "deps": [
-                        "job0"
+                        {
+                            "op-index": "job0",
+                            "op-out-index": 0
+                        }
                     ]
                     
                 },
                 {
-                    "name": "RandomForest",
+                   "name": "DataSplit",
                     "op-index": "job2",
+                    "op-category": "sample",
+                    "op-name": "data-split",
                     "rid": "",
                     "params": {
-                        "regulization": "",
-                        "regulization_weight": 0,
-                        "max_iteraion_num": 10
+                        "percentage": 0.7,
                     },
                     "deps": [
-                        "job1"
+                        {
+                            "op-index": "job1",
+                            "op-out-index": 0
+                        }
+                    ]
+                },
+                {
+                    "name": "Train".
+                    "op-index": "job3",
+                    "op-category": "machine-learning",
+                    "op-name": "train",
+                    "rid": "",
+                    "params": {
+
+                    },
+                    "deps": [
+                        {
+                            "op-index": "job4"
+                            "op-out-index": 0
+                        },
+                        {
+                            "op-index": "job2"
+                            ""op-out-index": 0
+                        }
+                    ]
+                },
+
+                {
+                    "name": "RandomForest",
+                    "op-index": "job4",
+                    "op-category": "machine-learning_model_classification",
+                    "op-name": "random-forest",
+                    "rid": "",
+                    "params": {
+                 
+                    },
+                    "deps": [
+
                     ]
                 }
             ]

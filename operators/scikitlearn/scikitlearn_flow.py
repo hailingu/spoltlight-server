@@ -14,7 +14,7 @@ class ScikitlearnFlow(Flow):
         self.failded_operators = {}
         self.flow_json = flow_json
         self.pending_operators = self.__flow_parser()
-        self.id = idGenerator.id_generator()
+        self.id = idGenerator()
 
     def run(self):
         while len(self.pending_operators) > 0:
@@ -27,7 +27,7 @@ class ScikitlearnFlow(Flow):
                         dependency_ready = dependency_ready and (input_op.json_param['op_index'] in self.success_operators)
 
                 if dependency_ready:
-                    self.running_operators[op_index] = operator
+                    self.running_operators[op_index] = operator.get_result()
                     status = operator.run()
 
                 if status == OperatorStatus.SUCCESS:
