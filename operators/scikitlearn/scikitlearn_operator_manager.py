@@ -8,6 +8,11 @@ from operators.scikitlearn.machine_learning.machine_learning_manager import mach
 class ScikitlearnOperatorManager(OperatorManager):
     '''A scikit learn operator manager'''
 
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(cls, '_instance'):
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
     def __init__(self):
         self.managers = {}
 
