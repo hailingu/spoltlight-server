@@ -1,9 +1,21 @@
 from operators.operator_manager import OperatorManager
-from utils.utils import Singleton
 
 from operators.scikitlearn.data_import.data_import_manager import dataImportOperatorManager
 from operators.scikitlearn.data_transformation.data_transformation_manager import dataTransformationOperatorManager
 from operators.scikitlearn.machine_learning.machine_learning_manager import machineLearningOperatorManager
+
+
+class Singleton(type):
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        else:
+            cls._instances[cls].__init__(*args, **kwargs)
+    
+        return cls._instances[cls]
+        
 
 class ScikitlearnOperatorManager(OperatorManager, metaclass=Singleton):
     '''A scikit learn operator manager'''

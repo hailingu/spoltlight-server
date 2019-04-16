@@ -41,10 +41,7 @@ class ScikitlearnFlow(Flow):
                     self.pending_operators.pop(op_index)
                 break
                 
-            if status == None:
-                break
-            
-            if len(self.failded_operators) > 0:
+            if status == None or len(self.failded_operators) > 0:
                 break
     
         return None
