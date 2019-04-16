@@ -1,9 +1,13 @@
-class Operator:
+from abc import abstractmethod, ABC
+
+class Operator(ABC):
     '''A splotlight base operator class'''
 
-    def __init__(self):
-        self.operator_type = None
-        self.operator_name = None
-
+    @abstractmethod
     def run(self):
-        return None
+        pass
+
+
+    @abstractmethod
+    def get_status(self):
+        pass

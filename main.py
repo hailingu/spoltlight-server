@@ -8,22 +8,14 @@ app = Flask(__name__)
 CORS(app, support_credentials=True)
 
 
-
 @app.route('/', methods=['POST'])
-def hello_flask():
+def splotlight():
     if request.method == 'POST':
-        # flow = SparkFlow(request.json)
-        # flow.init_azkaban_flow()
-        # flow.generate_azkaban_flow()
         flow_id = flowManager.add_flow(request.json)
         flowManager.run_flow(flow_id)
         return 'success'
     return 'failed'
 
-def create_azkaban_job(job_id):
-    return 0
-
-
 if __name__ == '__main__':
     app.debug = True
-    app.run(host='127.0.0.1', port=5000)
+    app.run(host='127.0.0.1', port=5000, threaded=True)
