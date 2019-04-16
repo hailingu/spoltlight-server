@@ -11,7 +11,7 @@ class ImportCSV(ScikitlearnOperator):
     OP_CATEGORY = 'data-import'
 
     def __init__(self):
-        super.__init__()
+        super(ImportCSV, self).__init__()
         self.op_input_num = 0
         self.op_output_num = 1
         self.op_status = OperatorStatus.INIT
@@ -20,7 +20,7 @@ class ImportCSV(ScikitlearnOperator):
 
     def init_operator(self, op_json_param):
         self.op_json_param = op_json_param
-        self.input_path = self.op_json_param['input_path']
+        self.input_path = self.op_json_param['input-path']
         self.seperator = self.op_json_param['seperator'] if 'seperator' in self.op_json_param else ','
 
     def run(self):

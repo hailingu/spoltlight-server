@@ -10,7 +10,7 @@ class RemoveDuplicatedRows(ScikitlearnOperator):
     OP_CATEGORY = 'data-transformation'
 
     def __init__(self):
-        super.__init__()
+        super(RemoveDuplicatedRows, self).__init__()
         self.op_input_num = 1
         self.op_output_num = 1
         self.op_status = OperatorStatus.INIT
@@ -24,7 +24,7 @@ class RemoveDuplicatedRows(ScikitlearnOperator):
 
     def run(self):
         try:
-            data = self.op_input_ops[0](index=self.op_input_ops_index[0])
+            data = self.op_input_ops[0].get_result(index=self.op_input_ops_index[0])
             data.drop_duplicates(subset=self.columns.strip("'").split(' '), inplace=True)
             self.op_result.append(data)
             self.status = OperatorStatus.SUCCESS

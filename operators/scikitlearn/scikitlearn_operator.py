@@ -12,7 +12,7 @@ class ScikitlearnOperator(Operator):
         self.op_input_num = None
         self.op_output_num = None
         self.op_input_ops = []
-        self.op_input_ops_index = None
+        self.op_input_ops_index = []
         self.op_result = []
         self.op_status = None
         self.op_json_param = None
@@ -27,6 +27,8 @@ class ScikitlearnOperator(Operator):
     def run(self):
         pass
 
-    @abstractmethod
     def get_result(self, index=0):
-        pass
+        return self.op_result[index]
+
+    def get_status(self):
+        return self.op_status

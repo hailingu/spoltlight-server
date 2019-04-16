@@ -11,7 +11,7 @@ class DataSplit(ScikitlearnOperator):
     OP_CATEGORY = 'sample'
 
     def __init__(self):
-        super.__init__()
+        super(DataSplit, self).__init__()
         self.op_input_num = 1
         self.op_output_num = 2
         self.op_status = OperatorStatus.INIT
@@ -25,15 +25,14 @@ class DataSplit(ScikitlearnOperator):
 
     def run(self):
         try:
-            data = self.op_input_ops[0](self.op_input_ops_index[0])
-            split_index = int(self.percentage * data.size)
-            self.op_result.append(data.iloc[:,:split_index])
-            self.op_result.append(data.iloc[:,split_index:])
+            data = self.op_input_ops[0].get_result(self.op_input_ops_index[0])
+            split_index = int(self.percentage * data.shape[0])
+            self.op_result.append(data.iloc[:split_index,:])
+            self.op_result.append(data.iloc[split_index:,:])
             self.op_status = OperatorStatus.SUCCESS
         except Exception as e:
             print('Exception ' + str(e))
             self.status = OperatorStatus.FAILED
-
         return self.op_status
 
     def __str__(self):

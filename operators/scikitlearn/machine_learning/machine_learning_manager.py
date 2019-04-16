@@ -1,6 +1,7 @@
 from operators.operator_manager import OperatorManager
 
 from operators.scikitlearn.machine_learning.model.classification.random_forest import RandomForest
+from operators.scikitlearn.machine_learning.train import Train
 
 class MachineLearningOperatorManager(OperatorManager):
     '''A machine learning operator manager'''
@@ -29,3 +30,4 @@ class MachineLearningOperatorManager(OperatorManager):
 
 machineLearningOperatorManager = MachineLearningOperatorManager()
 machineLearningOperatorManager.register_operator(RandomForest)
+machineLearningOperatorManager.register_operator(Train)

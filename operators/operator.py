@@ -7,7 +7,6 @@ class Operator(ABC):
     def run(self):
         pass
 
-
     @abstractmethod
     def get_status(self):
         pass

@@ -7,17 +7,17 @@ from operators.operator_status import OperatorStatus
 
 
 class RandomForest(ScikitlearnOperator):
-    '''Random forest model '''
+    '''random forest model'''
 
     OP_NAME = 'random-forest'
-    OP_CATEGORY = 'machine-learning_model_classfication'
+    OP_CATEGORY = 'machine-learning'
 
     def __init__(self):
-        super.__init__()
+        super(RandomForest, self).__init__()
         self.op_input_num = 0
         self.op_output_num = 1
         self.op_status = OperatorStatus.INIT
-        self.n_estimators = 3000
+        self.n_estimators = 10
         self.criterion = 'gini'
         self.max_features = 'auto'
         self.max_depth = 5
@@ -28,7 +28,7 @@ class RandomForest(ScikitlearnOperator):
 
     def init_operator(self, op_json_param):
         self.op_json_param = op_json_param
-        self.n_estimators = op_json_param['n_estimators']
+        self.n_estimators = int(op_json_param['n_estimators']) if 'n_estimators' in op_json_param else 10
         self.criterion = op_json_param['criterion'] if 'criterion' in op_json_param else 'gini'
         self.max_features = int(
             op_json_param['max_features']) if 'max_features' in op_json_param else 3000

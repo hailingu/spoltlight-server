@@ -93,7 +93,6 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
                             "op-out-index": 0
                         }
                     ]
-                    
                 },
                 {
                    "name": "DataSplit",

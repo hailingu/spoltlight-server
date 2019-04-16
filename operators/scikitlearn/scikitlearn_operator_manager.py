@@ -3,6 +3,7 @@ from operators.operator_manager import OperatorManager
 from operators.scikitlearn.data_import.data_import_manager import dataImportOperatorManager
 from operators.scikitlearn.data_transformation.data_transformation_manager import dataTransformationOperatorManager
 from operators.scikitlearn.machine_learning.machine_learning_manager import machineLearningOperatorManager
+from operators.scikitlearn.sample.sample_manger import sampleOperatorManager
 
 class ScikitlearnOperatorManager(OperatorManager):
     '''A scikit learn operator manager'''
@@ -31,3 +32,4 @@ scikitlearnOperatorManager = ScikitlearnOperatorManager()
 scikitlearnOperatorManager.register_manager(dataImportOperatorManager)
 scikitlearnOperatorManager.register_manager(dataTransformationOperatorManager)
 scikitlearnOperatorManager.register_manager(machineLearningOperatorManager)
+scikitlearnOperatorManager.register_manager(sampleOperatorManager)
