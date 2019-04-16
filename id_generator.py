@@ -34,3 +34,5 @@ class IdGenerator(metaclass=Singleton):
         return self.id_generator()
 
 idGenerator = IdGenerator()
+
+

@@ -4,21 +4,13 @@ from operators.scikitlearn.data_import.data_import_manager import dataImportOper
 from operators.scikitlearn.data_transformation.data_transformation_manager import dataTransformationOperatorManager
 from operators.scikitlearn.machine_learning.machine_learning_manager import machineLearningOperatorManager
 
-
-class Singleton(type):
-    _instances = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        else:
-            cls._instances[cls].__init__(*args, **kwargs)
-    
-        return cls._instances[cls]
-        
-
-class ScikitlearnOperatorManager(OperatorManager, metaclass=Singleton):
+class ScikitlearnOperatorManager(OperatorManager):
     '''A scikit learn operator manager'''
+
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(cls, '_instance'):
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
     def __init__(self):
         self.managers = {}

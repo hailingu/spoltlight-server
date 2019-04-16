@@ -2,19 +2,7 @@ from operators.operator_manager import OperatorManager
 
 from operators.scikitlearn.data_transformation.remove_duplicated_rows import RemoveDuplicatedRows
 
-class Singleton(type):
-    _instances = {}
-
-    def __call__(cls, *args, **kwargs):
-        if cls not in cls._instances:
-            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
-        else:
-            cls._instances[cls].__init__(*args, **kwargs)
-    
-        return cls._instances[cls]
-
-
-class DataTransformationOperatorManager(OperatorManager, metaclass=Singleton):
+class DataTransformationOperatorManager(OperatorManager):
     '''A data transformation operator manager'''
 
     MANAGER_NAME = 'data-transformation'
@@ -26,7 +14,7 @@ class DataTransformationOperatorManager(OperatorManager, metaclass=Singleton):
         return None
 
     def register_operator(self, operator_class):
-        self.operators[operator_class.op_name, operator_class]
+        self.operators[operator_class.OP_NAME] = operator_class
 
     def get_manager(self, manager_name):
         return None
@@ -35,4 +23,4 @@ class DataTransformationOperatorManager(OperatorManager, metaclass=Singleton):
         return self.operators[op_name]
 
 dataTransformationOperatorManager = DataTransformationOperatorManager()
-dataTransformationOperatorManager.register_operator(RemoveDuplicatedRows.OP_NAME, RemoveDuplicatedRows)
+dataTransformationOperatorManager.register_operator(RemoveDuplicatedRows)
