@@ -59,7 +59,7 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
 
     This is a default backend json Operation
 
-   {
+  {
         "flow": {
             "name": "simplest_flow",
             "id": "",
@@ -72,7 +72,7 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
                     "op-category": "data-import",
                     "op-name": "import-csv",
                     "params": {
-                        "input": "datasets/sample/iris_duplicated.txt",
+                        "input": "datasets/sample/iris_duplicated.txt"
                     },
                     "deps": [
                         
@@ -85,7 +85,7 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
                     "op-category": "data-trasformation",
                     "op-name": "remove-duplicated-rows",
                     "params": {
-                        "columns": 'ID SepalLength SepalWidth PetalLength PetalWidth Species',
+                        "columns": "'ID SepalLength SepalWidth PetalLength PetalWidth Species'"
                     },
                     "deps": [
                         {
@@ -102,7 +102,7 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
                     "op-name": "data-split",
                     "rid": "",
                     "params": {
-                        "percentage": 0.7,
+                        "percentage": 0.7
                     },
                     "deps": [
                         {
@@ -112,7 +112,7 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
                     ]
                 },
                 {
-                    "name": "Train".
+                    "name": "Train",
                     "op-index": "job3",
                     "op-category": "machine-learning",
                     "op-name": "train",
@@ -122,12 +122,12 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
                     },
                     "deps": [
                         {
-                            "op-index": "job4"
+                            "op-index": "job4",
                             "op-out-index": 0
                         },
                         {
-                            "op-index": "job2"
-                            ""op-out-index": 0
+                            "op-index": "job2",
+                            "op-out-index": 0
                         }
                     ]
                 },
