@@ -16,6 +16,7 @@ class ScikitlearnOperator(Operator):
         self.op_result = []
         self.op_status = None
         self.op_json_param = None
+        self.op_running_id = None
         self.op_backend = 'scikit-learn'
 
 

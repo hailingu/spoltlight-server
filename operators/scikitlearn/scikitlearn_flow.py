@@ -54,7 +54,6 @@ class ScikitlearnFlow(Flow):
         for operator in operators:
             operator_pending_list.append(operator)
 
-
         while len(operator_pending_list) > 0:
             for op in operator_pending_list:
                 operator = op
@@ -69,6 +68,7 @@ class ScikitlearnFlow(Flow):
                     operator_manager = scikitlearnOperatorManager.get_manager(operator['op-category'])
                     scikitlearn_operator = operator_manager.get_operator(operator['op-name'])()
                     scikitlearn_operator.init_operator(operator['params'])
+                    scikitlearn_operator.op_running_id = idGenerator.operator_running_id_generator()
                     operator_processed_list[op_index] = scikitlearn_operator
                     operator_pending_list.remove(operator)
                 else:
@@ -93,6 +93,7 @@ class ScikitlearnFlow(Flow):
                     operator['params']['op-index'] = operator['op-index']
                     operator_manager = scikitlearnOperatorManager.get_manager(operator['op-category'])
                     scikitlearn_operator = operator_manager.get_operator(operator['op-name'])()
+                    scikitlearn_operator.op_running_id = idGenerator.operator_running_id_generator()
                     scikitlearn_operator.init_operator(operator['params'])
                     operator_processed_list[op_index] = scikitlearn_operator
                     operator_pending_list.remove(operator)
