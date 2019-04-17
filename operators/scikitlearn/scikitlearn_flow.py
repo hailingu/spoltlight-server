@@ -17,20 +17,17 @@ class ScikitlearnFlow(Flow):
         self.id = idGenerator()
 
     def run(self):
-        i = 0
         while len(self.pending_operators) > 0:
             status = None
-            print(self.pending_operators)
             for op_index in self.pending_operators:
                 operator = self.pending_operators[op_index]
                 dependency_ready = True
-                if  operator.OP_CATEGORY != 'data-import':
-                    for input_op in operator.op_input_ops:
-                        dependency_ready = dependency_ready and (input_op.op_json_param['op-index'] in self.success_operators)
+    
+                for input_op in operator.op_input_ops:
+                    dependency_ready = dependency_ready and (input_op.op_json_param['op-index'] in self.success_operators)
 
                 if dependency_ready:
                     self.running_operators[op_index] = operator
-                    print('run', operator)
                     status = operator.run()
 
                 if status == OperatorStatus.SUCCESS:
@@ -47,10 +44,6 @@ class ScikitlearnFlow(Flow):
             if status == None or len(self.failded_operators) > 0:
                 break
 
-            i = i + 1
-            if i == 3:
-                break
-    
         return None
 
     def __flow_parser__(self):

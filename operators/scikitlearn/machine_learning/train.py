@@ -26,26 +26,25 @@ class Train(ScikitlearnOperator):
         self.op_input_ops = op_json_param['input-ops']
         self.op_input_ops_index = op_json_param['input-ops-index']
         self.label_column = op_json_param['label_column']
-        self.train_columns = op_json_param['train_columns']
-        # self.model = self.op_input_ops[0].get_result()
+        self.train_columns = op_json_param['train_columns'].strip("'").split(' ')
 
     def run(self):
         try:
-            print(self.op_input_ops, self.op_input_ops_index)
-            # data = self.op_input_ops[1].get_result([self.op_input_ops_index[1]])
-            # x = data[self.train_columns]
-            # Y = data[self.label_column]
-            # # self.model.fit(x, Y)
-            # self.op_result.append(self.model)
-            self.status = OperatorStatus.SUCCESS
+            data = self.op_input_ops[1].get_result(self.op_input_ops_index[1])
+            self.model = self.op_input_ops[0].get_result(self.op_input_ops_index[0])    
+            x = data[self.train_columns]
+            Y = data[self.label_column]
+            self.model.fit(x, Y)
+            self.op_result.append(self.model)
+            self.op_status = OperatorStatus.SUCCESS                                                                                                                                                                                                       
         except Exception as e:
             print('Exception ' + str(e))
-            self.status = OperatorStatus.FAILED
+            self.op_status = OperatorStatus.FAILED
 
         return self.op_status
 
     def __str__(self):
-        return 'random forest operator'
+        return 'train operator'
 
     def to_string(self):
         return self.__str__()

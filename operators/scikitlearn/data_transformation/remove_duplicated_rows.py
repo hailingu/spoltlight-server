@@ -1,7 +1,6 @@
-import pandas as pd
-
-from operators.scikitlearn.scikitlearn_operator import ScikitlearnOperator
 from operators.operator_status import OperatorStatus
+from operators.scikitlearn.scikitlearn_operator import ScikitlearnOperator
+
 
 class RemoveDuplicatedRows(ScikitlearnOperator):
     '''Remove duplicated rows from data with selected columns'''

@@ -31,7 +31,7 @@ class RandomForest(ScikitlearnOperator):
         self.n_estimators = int(op_json_param['n_estimators']) if 'n_estimators' in op_json_param else 10
         self.criterion = op_json_param['criterion'] if 'criterion' in op_json_param else 'gini'
         self.max_features = int(
-            op_json_param['max_features']) if 'max_features' in op_json_param else 3000
+            op_json_param['max_features']) if 'max_features' in op_json_param else 'auto'
         self.max_depth = int(
             op_json_param['max_depth']) if 'max_depth' in op_json_param else 5
         self.min_samples_split = int(

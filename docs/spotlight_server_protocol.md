@@ -59,91 +59,85 @@ spotlight-server accepts a job flow expressed in json format. The simplest job f
 
     This is a default backend json Operation
 
-  {
-        "flow": {
-            "name": "simplest_flow",
-            "id": "",
-            "backend": "scikitlearn",
-            "operators": [
-                {
-                    "name": "IrisMultiClassData",
-                    "op-index": "job0",
-                    "rid": "",
-                    "op-category": "data-import",
-                    "op-name": "import-csv",
-                    "params": {
-                        "input": "datasets/sample/iris_duplicated.txt"
-                    },
-                    "deps": [
-                        
-                    ]
+ {
+    "flow": {
+        "name": "simplest_flow",
+        "id": "",
+        "backend": "scikitlearn",
+        "operators": [
+            {
+                "name": "IrisMultiClassData",
+                "op-index": "job0",
+                "rid": "",
+                "op-category": "data-import",
+                "op-name": "import-csv",
+                "params": {
+                    "input-path": "datasets/sample/iris_duplicated.txt"
                 },
-                {
-                    "name": "RemoveDuplicatedRows",
-                    "rid": "",
-                    "op-index": "job1",
-                    "op-category": "data-trasformation",
-                    "op-name": "remove-duplicated-rows",
-                    "params": {
-                        "columns": "'ID SepalLength SepalWidth PetalLength PetalWidth Species'"
-                    },
-                    "deps": [
-                        {
-                            "op-index": "job0",
-                            "op-out-index": 0
-                        }
-                    ]
+                "deps": []
+            },
+            {
+                "name": "RemoveDuplicatedRows",
+                "rid": "",
+                "op-index": "job1",
+                "op-category": "data-transformation",
+                "op-name": "remove-duplicated-rows",
+                "params": {
+                    "columns": "'ID SepalLength SepalWidth PetalLength PetalWidth Species'"
                 },
-                {
-                   "name": "DataSplit",
-                    "op-index": "job2",
-                    "op-category": "sample",
-                    "op-name": "data-split",
-                    "rid": "",
-                    "params": {
-                        "percentage": 0.7
-                    },
-                    "deps": [
-                        {
-                            "op-index": "job1",
-                            "op-out-index": 0
-                        }
-                    ]
+                "deps": [
+                    {
+                        "op-index": "job0",
+                        "op-out-index": 0
+                    }
+                ]
+            },
+            {
+                "name": "DataSplit",
+                "op-index": "job2",
+                "op-category": "sample",
+                "op-name": "data-split",
+                "rid": "",
+                "params": {
+                    "percentage": 0.7
                 },
-                {
-                    "name": "Train",
-                    "op-index": "job3",
-                    "op-category": "machine-learning",
-                    "op-name": "train",
-                    "rid": "",
-                    "params": {
-
-                    },
-                    "deps": [
-                        {
-                            "op-index": "job4",
-                            "op-out-index": 0
-                        },
-                        {
-                            "op-index": "job2",
-                            "op-out-index": 0
-                        }
-                    ]
+                "deps": [
+                    {
+                        "op-index": "job1",
+                        "op-out-index": 0
+                    }
+                ]
+            },
+            {
+                "name": "Train",
+                "op-index": "job3",
+                "op-category": "machine-learning",
+                "op-name": "train",
+                "rid": "",
+                "params": {
+                	"label_column": "Species",
+                	"train_columns": "'SepalLength SepalWidth PetalLength PetalWidth Species'"
                 },
-
-                {
-                    "name": "RandomForest",
-                    "op-index": "job4",
-                    "op-category": "machine-learning_model_classification",
-                    "op-name": "random-forest",
-                    "rid": "",
-                    "params": {
-                 
+                "deps": [
+                    {
+                        "op-index": "job4",
+                        "op-out-index": 0
                     },
-                    "deps": [
-
-                    ]
-                }
-            ]
-        }
+                    {
+                        "op-index": "job2",
+                        "op-out-index": 0
+                    }
+                ]
+            },
+            {
+                "name": "RandomForest",
+                "op-index": "job4",
+                "op-category": "machine-learning",
+                "op-name": "random-forest",
+                "rid": "",
+                "params": {},
+                "deps": []
+            }
+        ]
     }
+}

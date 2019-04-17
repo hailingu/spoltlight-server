@@ -1,6 +1,6 @@
 from operators.scikitlearn.scikitlearn_flow import ScikitlearnFlow
 from operators.spark.spark_flow import SparkFlow
-from flow import Flow
+
 
 class FlowManager:
     '''A splotlight flow manager'''

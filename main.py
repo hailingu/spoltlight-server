@@ -1,9 +1,8 @@
-from flask import Flask
+from flask import Flask, request
 from flask_cors import CORS
-from flask import request
-import operators.operator
-from operators.spark.spark_flow import SparkFlow
+
 from flow_manager import flowManager
+
 app = Flask(__name__)
 CORS(app, support_credentials=True)
 
