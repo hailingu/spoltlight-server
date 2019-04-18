@@ -2,8 +2,7 @@
 
 This is a backend for the splotlight project
 
-
-### Install dependency
+## Install dependency
 
     pip install scikitlearn
     pip install pandas
