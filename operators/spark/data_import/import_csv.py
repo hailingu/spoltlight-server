@@ -1,6 +1,9 @@
+import os
+
 from operators.spark.spark_operator import SparkOperator
 from operators.operator_status import OperatorStatus
 from id_generator import idGenerator
+
 
 
 class ImportCSV(SparkOperator):
@@ -26,6 +29,7 @@ class ImportCSV(SparkOperator):
         self.input_path = self.op_json_param['input-path']
         self.delimiter = self.op_json_param['delimiter'] if 'delimiter' in self.op_json_param else ','
         self.op_running_mode = self.op_json_param['running-mode'] if 'running-mode' in self.op_json_param else 'script'
+        self.op_running_command = self.op_json_param['running-command'] if 'running-command' in self.op_json_param else 'spark-submit --master local[2]'
         
     def run(self):
         if self.op_running_mode == 'function':
@@ -34,7 +38,9 @@ class ImportCSV(SparkOperator):
             return self.run_script_mode()
         
     def run_function_mode(self):
-        return None
+        return self.op_status
 
     def run_script_mode(self):
-        return None
+        run_script =  'import_csv.py ' + self.input_path + ' ' + self.op_result[0] + ' ' + self.delimiter
+        return os.system(self.op_running_command + ' ' + run_script)
+        
