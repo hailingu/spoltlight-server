@@ -1,6 +1,7 @@
 from flow.flow import Flow
 from flow.flow_status import FlowStatus
 from id_generator import idGenerator
+from operators.operator_status import OperatorStatus
 
 
 class SparkFlow(Flow):
@@ -32,10 +33,39 @@ class SparkFlow(Flow):
             return self.flow_status
 
     def script_mode(self):
-        pass
+        while len(self.flow_pending_operators) > 0:
+            for op_index in self.flow_pending_operators:
+                operator = self.flow_pending_operators[op_index]
+                dependency_ready = True
+    
+                for input_op in operator.op_input_ops:
+                    dependency_ready = dependency_ready and (input_op.op_json_param['op-index'] in self.flow_success_operators)
 
+                if dependency_ready:
+                    self.flow_running_operators[op_index] = operator
+                    status = operator.run_script_mode()
+
+                if status == OperatorStatus.SUCCESS:
+                    self.flow_running_operators.pop(op_index)
+                    self.flow_success_operators[op_index] = operator
+                    self.flow_pending_operators.pop(op_index)
+
+                if status == OperatorStatus.FAILED:
+                    self.flow_running_operators.pop(op_index)
+                    self.flow_failded_operators[op_index] = operator
+                    self.flow_pending_operators.pop(op_index)
+                break
+                
+            if status == None or len(self.flow_failded_operators) > 0:
+                self.flow_status = FlowStatus.FAILED
+                break
+
+        self.flow_status = FlowStatus.SUCCESS
+        return self.flow_status    
+            
     def function_mode(self):
-        pass
+        self.flow_status = FlowStatus.SUCCESS
+        return self.flow_status
     
     def __flow_parser__(self):
         operator_processed_list = {}

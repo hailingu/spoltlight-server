@@ -19,7 +19,7 @@ class SparkOperator(Operator):
         self.op_status = None
         self.op_json_param = None
         self.op_running_id = None
-        self.op_running_model = None
+        self.op_running_mode = None
         self.op_script_location = None
         self.op_backend = 'spark'
 
@@ -32,11 +32,11 @@ class SparkOperator(Operator):
         pass
 
     @abstractmethod
-    def run_by_script(self):
+    def run_script_mode(self):
         pass
 
     @abstractmethod
-    def __call__(self):
+    def run_function_mode(self):
         pass
 
     def get_result(self, index=0):
