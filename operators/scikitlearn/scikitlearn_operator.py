@@ -5,6 +5,8 @@ from operators.operator_status import OperatorStatus
 
 
 class ScikitlearnOperator(Operator):
+    '''Scikitlearn basic operator'''
+
     OP_NAME = 'Scikitlearn Base Operator'
     OP_CATEGORY = 'Root'
 
@@ -18,7 +20,6 @@ class ScikitlearnOperator(Operator):
         self.op_json_param = None
         self.op_running_id = None
         self.op_backend = 'scikit-learn'
-
 
     @abstractmethod
     def init_operator(self, op_json_param):

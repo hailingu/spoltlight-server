@@ -16,16 +16,16 @@ class ImportCSV(ScikitlearnOperator):
         self.op_output_num = 1
         self.op_status = OperatorStatus.INIT
         self.input_path = None
-        self.seperator = None
+        self.delimiter = None
 
     def init_operator(self, op_json_param):
         self.op_json_param = op_json_param
         self.input_path = self.op_json_param['input-path']
-        self.seperator = self.op_json_param['seperator'] if 'seperator' in self.op_json_param else ','
+        self.delimiter = self.op_json_param['delimiter'] if 'delimiter' in self.op_json_param else ','
 
     def run(self):
         try:
-            self.op_result.append(pd.read_csv(self.input_path, header=0, sep=self.seperator))
+            self.op_result.append(pd.read_csv(self.input_path, header=0, sep=self.delimiter))
             self.status = OperatorStatus.SUCCESS
         except Exception as e:
             print('Exception ' + str(e))

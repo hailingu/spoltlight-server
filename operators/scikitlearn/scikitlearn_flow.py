@@ -1,5 +1,6 @@
 from id_generator import idGenerator
-from flow import Flow
+from flow.flow import Flow
+from flow.flow_status import FlowStatus
 from operators.operator_status import OperatorStatus
 from operators.scikitlearn.scikitlearn_operator_manager import scikitlearnOperatorManager
 
@@ -7,44 +8,52 @@ from operators.scikitlearn.scikitlearn_operator_manager import scikitlearnOperat
 class ScikitlearnFlow(Flow):
     '''A scikit learn flow'''
 
-    def __init__(self, flow_json):
-        self.pending_operators = {}
-        self.running_operators = {}
-        self.success_operators = {}
-        self.failded_operators = {}
+    def __init__(self):
+        self.flow_pending_operators = {}
+        self.flow_running_operators = {}
+        self.flow_success_operators = {}
+        self.flow_failded_operators = {}
+        self.flow_json = None
+        self.flow_id = None
+        self.flow_status = FlowStatus.INIT
+        self.flow_scheduler = 'default'
+        
+    def init(self, flow_json):
         self.flow_json = flow_json
-        self.pending_operators = self.__flow_parser__()
-        self.id = idGenerator()
+        self.flow_pending_operators = self.__flow_parser__()
+        self.flow_id = idGenerator()
 
     def run(self):
-        while len(self.pending_operators) > 0:
+        while len(self.flow_pending_operators) > 0:
             status = None
-            for op_index in self.pending_operators:
-                operator = self.pending_operators[op_index]
+            for op_index in self.flow_pending_operators:
+                operator = self.flow_pending_operators[op_index]
                 dependency_ready = True
     
                 for input_op in operator.op_input_ops:
-                    dependency_ready = dependency_ready and (input_op.op_json_param['op-index'] in self.success_operators)
+                    dependency_ready = dependency_ready and (input_op.op_json_param['op-index'] in self.flow_success_operators)
 
                 if dependency_ready:
-                    self.running_operators[op_index] = operator
+                    self.flow_running_operators[op_index] = operator
                     status = operator.run()
 
                 if status == OperatorStatus.SUCCESS:
-                    self.running_operators.pop(op_index)
-                    self.success_operators[op_index] = operator
-                    self.pending_operators.pop(op_index)
+                    self.flow_running_operators.pop(op_index)
+                    self.flow_success_operators[op_index] = operator
+                    self.flow_pending_operators.pop(op_index)
 
                 if status == OperatorStatus.FAILED:
-                    self.running_operators.pop(op_index)
-                    self.failded_operators[op_index] = operator
-                    self.pending_operators.pop(op_index)
+                    self.flow_running_operators.pop(op_index)
+                    self.flow_failded_operators[op_index] = operator
+                    self.flow_pending_operators.pop(op_index)
                 break
                 
-            if status == None or len(self.failded_operators) > 0:
+            if status == None or len(self.flow_failded_operators) > 0:
+                self.flow_status = FlowStatus.FAILED
                 break
 
-        return None
+        self.flow_status = FlowStatus.SUCCESS
+        return self.flow_status
 
     def __flow_parser__(self):
         operator_pending_list = []
