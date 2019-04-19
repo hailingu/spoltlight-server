@@ -20,7 +20,7 @@ class SparkOperator(Operator):
         self.op_json_param = None
         self.op_running_id = None
         self.op_running_mode = None
-        self.op_running_command = None
+        self.op_working_directory = None
         self.op_script_location = None
         self.op_backend = 'spark'
 

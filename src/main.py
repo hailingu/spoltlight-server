@@ -1,7 +1,8 @@
 from flask import Flask, request
 from flask_cors import CORS
 
-from flow.flow_manager import flowManager
+from flow.flow_manager import FlowManager
+from scheduler.scheduler_factory import SchedulerFactory
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -10,8 +11,7 @@ CORS(app, support_credentials=True)
 @app.route('/', methods=['POST'])
 def splotlight():
     if request.method == 'POST':
-        flow_id = flowManager.add_flow(request.json)
-        flowManager.run_flow(flow_id)
+        flow = FlowManager.spawn_flow(request.json)
         return 'success'
     return 'failed'
 

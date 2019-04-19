@@ -8,6 +8,7 @@ Spotlight-server accepts a job flow expressed in json format. The job flow json 
             "id": "spotlight-flow-1452433232-223-0",
             "backend": "spark",
             "schedule": "azkaban",
+            "local": True,
             "operators": []
         }
     }
