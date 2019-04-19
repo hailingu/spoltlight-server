@@ -28,9 +28,11 @@ class SparkOperator(Operator):
     def init_operator(self, op_json_param):
         pass
 
-    @abstractmethod
     def run(self):
-        pass
+        if self.op_running_mode == 'function':
+            return self.run_function_mode()
+        else:
+            return self.run_script_mode()
 
     @abstractmethod
     def run_script_mode(self):

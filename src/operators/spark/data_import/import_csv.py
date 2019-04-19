@@ -32,12 +32,6 @@ class ImportCSV(SparkOperator):
         self.op_running_mode = self.op_json_param['running-mode'] if 'running-mode' in self.op_json_param else 'script'
         self.op_local = bool(self.op_json_param['local']) if 'local' in self.op_json_param else True
         self.op_working_directory = self.op_json_param['op-working-directory'] if 'op-working-directory' in self.op_json_param else None 
-
-    def run(self):
-        if self.op_running_mode == 'function':
-            return self.run_function_mode()
-        else:
-            return self.run_script_mode()
         
     def run_function_mode(self):
         return self.op_status
