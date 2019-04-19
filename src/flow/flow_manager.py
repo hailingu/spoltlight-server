@@ -6,7 +6,7 @@ class FlowManager:
     '''A splotlight flow manager'''
 
     @staticmethod    
-    def spawn_flow(spawn_flow):
+    def spawn_flow(flow_json):
         backend = flow_json['flow']['backend']
         flow = None
         if backend == 'scikitlearn':
