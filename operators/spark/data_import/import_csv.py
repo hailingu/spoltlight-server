@@ -5,7 +5,6 @@ from operators.operator_status import OperatorStatus
 from id_generator import idGenerator
 
 
-
 class ImportCSV(SparkOperator):
 
     '''import csv formate data'''
