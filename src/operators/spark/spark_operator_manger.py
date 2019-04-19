@@ -1,4 +1,5 @@
 from operators.operator_manager import OperatorManager
+from operators.spark.data_import.data_import_manager import dataImportOperatorManager
 
 
 class SparkOperatorManager(OperatorManager):
@@ -25,3 +26,4 @@ class SparkOperatorManager(OperatorManager):
         return None
 
 sparkOperatorManager = SparkOperatorManager()
+sparkOperatorManager.register_manager(dataImportOperatorManager)
