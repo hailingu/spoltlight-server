@@ -12,6 +12,9 @@ CORS(app, support_credentials=True)
 def splotlight():
     if request.method == 'POST':
         flow = FlowManager.spawn_flow(request.json)
+        scheduler = SchedulerFactory.get_scheduler(flow.flow_scheduler)
+        scheduler.submit(flow)
+        scheduler.run(flow.flow_id)
         return 'success'
     return 'failed'
 
