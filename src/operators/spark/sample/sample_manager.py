@@ -1,4 +1,5 @@
 from operators.operator_manager import OperatorManager
+from operators.spark.sample.data_split import DataSplit
 
 class SampleOperatorManager(OperatorManager):
     '''A sample operator manager'''
@@ -26,3 +27,4 @@ class SampleOperatorManager(OperatorManager):
         return self.operators[op_name]
 
 sampleOperatorManager = SampleOperatorManager()
+sampleOperatorManager.register_operator(DataSplit)

@@ -21,6 +21,7 @@ class SparkOperator(Operator):
         self.op_running_id = None
         self.op_running_mode = None
         self.op_working_directory = None
+        self.op_local = None
         self.op_script_location = None
         self.op_backend = 'spark'
 
