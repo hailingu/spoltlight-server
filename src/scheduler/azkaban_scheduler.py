@@ -37,7 +37,6 @@ class AzkabanClient:
         formated_create_url = self.create_url.format(self.session_id, project_name, description)
         os.system(formated_create_url)
 
-
     def delete_project(self, project_name):
         formated_delete_url = self.delete_url.format(self.session_id, project_name)
         os.system(formated_delete_url)

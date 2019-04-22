@@ -20,7 +20,7 @@ class DataSplit(SparkOperator):
         
         self.percentage = 0.8
 
-    def init(self, op_json_param):
+    def init_operator(self, op_json_param):
         self.op_json_param = op_json_param
         self.op_input_ops = self.op_json_param['input-ops']
         self.op_input_ops_index = op_json_param['input-ops-index']

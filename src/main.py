@@ -14,6 +14,7 @@ def splotlight():
         flow = FlowManager.spawn_flow(request.json)
         scheduler = SchedulerFactory.get_scheduler(flow.flow_scheduler)
         scheduler.submit(flow)
+        print(scheduler.scheduler_pending_flows)
         scheduler.run(flow.flow_id)
         return 'success'
     return 'failed'

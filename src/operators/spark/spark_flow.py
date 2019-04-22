@@ -29,14 +29,16 @@ class SparkFlow(Flow):
         self.flow_pending_operators = self.__flow_parser__()
         self.flow_run_mode = self.flow_flow_json['running-mode'] if 'running-mode' in self.flow_flow_json else 'script'
         self.flow_local = bool(self.flow_flow_json['local']) if 'local' in self.flow_flow_json else True
-        self.flow_pending_operators = self.__flow_parser__()
-        
+
         if self.flow_run_mode == 'script':
             self.flow_working_directory = ''
             if self.flow_local:
                 self.flow_working_directory = self.flow_working_directory + os.getcwd() + '/'
-
+             
             self.flow_working_directory = self.flow_working_directory + self.flow_id + '/'
+        
+        self.flow_pending_operators = self.__flow_parser__()
+
 
     def run(self):
         while len(self.flow_pending_operators) > 0:
@@ -88,7 +90,8 @@ class SparkFlow(Flow):
                 if deps_len == 0:
                      operator['params']['op-index'] = op_index
                      operator['params']['local'] = operator['local']
-                     operator['params']['running-mode'] =  operator['running-mode']
+                     operator['params']['running-mode'] =  self.flow_run_mode
+                     operator['params']['op-working-directory'] = self.flow_working_directory
                      operator_manager = sparkOperatorManager.get_manager(operator['op-category'])
                      spark_operator = operator_manager.get_operator(operator['op-name'])()
                      spark_operator.op_running_id = idGenerator.operator_running_id_generator(self.flow_id, op_index)
@@ -114,7 +117,8 @@ class SparkFlow(Flow):
 
                     operator['params']['op-index'] = op_index
                     operator['params']['local'] = operator['local']
-                    operator['params']['running-mode'] =  operator['running-mode']
+                    operator['params']['running-mode'] =  self.flow_run_mode
+                    operator['params']['op-working-directory'] = self.flow_working_directory
                     operator_manager = sparkOperatorManager.get_manager(operator['op-category'])
                     spark_operator = operator_manager.get_operator(operator['op-name'])()
                     spark_operator.op_running_id = idGenerator.operator_running_id_generator(self.flow_id, op_index)
