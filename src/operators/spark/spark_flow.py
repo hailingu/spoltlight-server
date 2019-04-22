@@ -33,7 +33,7 @@ class SparkFlow(Flow):
         if self.flow_run_mode == 'script':
             self.flow_working_directory = ''
             if self.flow_local:
-                self.flow_working_directory = self.flow_working_directory + os.getcwd() + '/'
+                self.flow_working_directory = self.flow_working_directory + os.getcwd() + '/projects/'
              
             self.flow_working_directory = self.flow_working_directory + self.flow_id + '/'
         

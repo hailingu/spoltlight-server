@@ -1,10 +1,10 @@
 import os
+import subprocess
 
 from operators.spark.spark_operator import SparkOperator
 from operators.operator_status import OperatorStatus
 from id_generator import idGenerator
 
-import subprocess
 
 
 class ImportCSV(SparkOperator):
@@ -53,7 +53,7 @@ class ImportCSV(SparkOperator):
         sub_proc = subprocess.Popen(run_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         # sub_proc.wait(20)
         stdout, stderr = sub_proc.communicate()
-        print(stdout)
+        print(sub_proc.returncode)
         self.op_status = OperatorStatus.SUCCESS
         return self.op_status
 

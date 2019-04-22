@@ -22,3 +22,4 @@ if __name__ == "__main__":
     data = spark.read.option('delimiter', delimiter).csv(input_path, header=True)
     data.write.format('parquet').save(output_path)
     spark.stop()
+    sys.exit(3) 
