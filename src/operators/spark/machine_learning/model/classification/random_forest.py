@@ -52,5 +52,5 @@ class RandomForest(SparkOperator):
         if self.op_local:
             run_command = run_command + 'local[2] ' 
 
-        self.op_result.append()
-        return sub_proc.op_status    
+        self.op_result.append('')
+        return self.op_status    
