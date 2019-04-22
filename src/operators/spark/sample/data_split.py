@@ -17,6 +17,7 @@ class DataSplit(SparkOperator):
         self.op_status = OperatorStatus.INIT
         self.op_local = True
         self.op_script_location = 'resources/sparkt_perators/sample/data_split.py'
+        
         self.percentage = 0.8
 
     def init(self, op_json_param):
@@ -26,6 +27,7 @@ class DataSplit(SparkOperator):
         self.op_running_mode = self.op_json_param['running-mode'] if 'running-mode' in self.op_json_param else 'script'
         self.op_local = bool(self.op_json_param['local']) if 'local' in self.op_json_param else True
         self.op_working_directory = self.op_json_param['op-working-directory'] if 'op-working-directory' in self.op_json_param else None 
+        
         self.percentage = float(op_json_param['percentage']) if 'percentage' in op_json_param else 0.8
 
     def run_function_mode(self):
