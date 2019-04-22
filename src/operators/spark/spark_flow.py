@@ -1,4 +1,5 @@
 import os
+import threading
 
 from flow.flow import Flow
 from flow.flow_status import FlowStatus
@@ -7,10 +8,11 @@ from operators.operator_status import OperatorStatus
 from operators.spark.spark_operator_manger import sparkOperatorManager
 
 
-class SparkFlow(Flow):
+class SparkFlow(Flow, threading.Thread):
     '''Spotlight spark flow'''
 
     def __init__(self):
+        threading.Thread.__init__(self)
         self.flow_pending_operators = {}
         self.flow_running_operators = {}
         self.flow_success_operators = {}

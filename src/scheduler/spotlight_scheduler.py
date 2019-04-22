@@ -36,7 +36,8 @@ class SpotlightScheduler(Scheduler):
 
     def run(self, flow_id):
         flow = self.scheduler_pending_flows[flow_id]
-        self.scheduler_thread_pools.apply_async(flow.run())
+        # self.scheduler_thread_pools.apply_async(flow.run())
+        flow.start()
         self.scheduler_running_flows[flow_id] = flow
         self.scheduler_pending_flows.pop(flow_id)
 
