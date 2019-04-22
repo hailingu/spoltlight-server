@@ -26,11 +26,11 @@ class ImportCSV(ScikitlearnOperator):
     def run(self):
         try:
             self.op_result.append(pd.read_csv(self.input_path, header=0, sep=self.delimiter))
-            self.status = OperatorStatus.SUCCESS
+            self.op_status = OperatorStatus.SUCCESS
         except Exception as e:
             print('Exception ' + str(e))
-            self.status = OperatorStatus.FAILED
-        return self.status
+            self.op_status = OperatorStatus.FAILED
+        return self.op_status
 
     def __str__(self):
         return 'import csv data operator, file location: ' + self.input_path

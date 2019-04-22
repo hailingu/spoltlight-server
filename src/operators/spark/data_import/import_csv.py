@@ -6,7 +6,6 @@ from operators.operator_status import OperatorStatus
 from id_generator import idGenerator
 
 
-
 class ImportCSV(SparkOperator):
 
     '''import csv formate data'''
@@ -49,11 +48,9 @@ class ImportCSV(SparkOperator):
 
         self.op_result.append(self.op_working_directory + 'output/' + self.op_json_param['op-index'] + '-output')
         run_command = run_command + self.op_script_location + ' ' + self.input_path + ' ' + self.op_result[0] + ' ' + self.delimiter
-        print(run_command)
+        # print(run_command)
         sub_proc = subprocess.Popen(run_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-        # sub_proc.wait(20)
-        stdout, stderr = sub_proc.communicate()
-        print(sub_proc.returncode)
-        self.op_status = OperatorStatus.SUCCESS
+        # stdout, stderr = sub_proc.communicate()
+        self.op_status = sub_proc.returncode
         return self.op_status
 
