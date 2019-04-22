@@ -1,5 +1,5 @@
 from operators.operator_manager import OperatorManager
-
+from operators.spark.data_transformation.remove_duplicated_rows import RemoveDuplicatedRows
 
 class DataTransformationOperatorManager(OperatorManager):
     '''A data import operator manager'''
@@ -27,3 +27,4 @@ class DataTransformationOperatorManager(OperatorManager):
         return self.operators[op_name]
 
 dataTransformationOperatorManager = DataTransformationOperatorManager()
+dataTransformationOperatorManager.register_operator(RemoveDuplicatedRows)

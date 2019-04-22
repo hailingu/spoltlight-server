@@ -29,6 +29,7 @@ class RandomForest(SparkOperator):
         self.feature_subset_strategy = None
         self.sub_sampling_rate = None
         self.min_info_gain = None
+        self.run_args = None
 
     def init_operator(self, op_json_param):
         self.op_json_param = op_json_param
@@ -59,9 +60,15 @@ class RandomForest(SparkOperator):
             self.op_json_param['min_info_gain']) if 'min_info_gain' in self.op_json_param else 0.0
 
     def run_function_mode(self):
-        self.op_result.append(RandomForestClassifier(featuresCol='features', labelCol='label', maxDepth=self.max_depth, maxBins=self.max_bins, minInstancesPerNode=self.min_instance_per_node,
-                                                     impurity=self.criterion, numTrees=self.num_trees, featureSubsetStrategy=self.feature_subset_strategy, seed=None, subsamplingRate=self.sub_sampling_rate))
+        self.op_result.append(self)
+        self.op_status = OperatorStatus.SUCCESS
         return self.op_status
 
     def run_script_mode(self):
+        self.run_args = str(self.max_cagegories) + ' ' + str(self.num_trees) + ' ' + str(self.max_depth) + \
+            ' ' + str(self.max_bins) + ' ' + \
+            str(self.min_instance_per_node) + ' ' + str(self.criterion) + ' ' + \
+            self.feature_subset_strategy + ' ' + \
+            str(self.sub_sampling_rate) + ' ' + str(self.min_info_gain)
+        self.op_status = OperatorStatus.SUCCESS
         return self.op_status

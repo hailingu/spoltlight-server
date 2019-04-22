@@ -1,4 +1,7 @@
 from operators.operator_manager import OperatorManager
+from operators.spark.machine_learning.model.classification.random_forest import RandomForest
+from operators.spark.machine_learning.train import Train
+
 
 class MachineLearningOperatorManager(OperatorManager):
     '''A machine learning operator manager'''
@@ -26,3 +29,5 @@ class MachineLearningOperatorManager(OperatorManager):
         return self.operators[op_name]
 
 machineLearningOperatorManager = MachineLearningOperatorManager()
+machineLearningOperatorManager.register_operator(RandomForest)
+machineLearningOperatorManager.register_operator(Train)

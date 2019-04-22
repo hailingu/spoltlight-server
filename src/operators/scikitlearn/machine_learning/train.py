@@ -1,6 +1,5 @@
 import pandas as pd
 
-from sklearn.ensemble import RandomForestClassifier
 
 from operators.scikitlearn.scikitlearn_operator import ScikitlearnOperator
 from operators.operator_status import OperatorStatus

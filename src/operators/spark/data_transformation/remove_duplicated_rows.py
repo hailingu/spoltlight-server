@@ -39,7 +39,7 @@ class RemoveDuplicatedRows(SparkOperator):
             run_command = run_command + 'local[2] ' 
 
         self.op_result.append(self.op_working_directory + 'output/' + self.op_json_param['op-index'] + '-output')
-        run_command = self.op_script_location + ' ' + self.op_input_ops[0].get_result(self.op_input_ops_index[0]) + ' ' + self.op_result[0] + ' ' + self.columns
+        run_command = run_command + self.op_script_location + ' ' + self.op_input_ops[0].get_result(self.op_input_ops_index[0]) + ' ' + self.op_result[0] + ' ' + self.columns
         sub_proc = subprocess.Popen(run_command, stdout=subprocess.PIPE, shell=True)
         sub_proc.wait(20)
         return sub_proc.returncode
