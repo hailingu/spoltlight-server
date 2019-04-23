@@ -15,23 +15,18 @@ class ProcessPool(object):
     def Process(self, *args, **kwds):
         return self._ctx.Process(*args, **kwds)
 
-    def __init__(self, processes=None):
+    def __init__(self, processes=None, maxtasks=None):
         self._ctx = multiprocessing.get_context()
         self._setup_queues()
         self._taskqueue = queue.SimpleQueue()
         self._cache = {}
         self._state = RUN
-        # self._maxtasksperchild = maxtasksperchild
-        # self._initializer = initializer
-        # self._initargs = initargs
+        self._maxtasks = maxtasks
 
         if processes is None:
             processes = os.cpu_count() or 1
         if processes < 1:
             raise ValueError("Number of processes must be at least 1")
-
-        # if initializer is not None and not callable(initializer):
-        #     raise TypeError('initializer must be a callable')
 
         self._processes = processes
         self._pool = []
@@ -91,7 +86,7 @@ class ProcessPool(object):
         """
         for i in range(self._processes - len(self._pool)):
             w = self.Process(target=worker,
-                             args=(self._inqueue, self._outqueue, self._wrap_exception)
+                             args=(self._inqueue, self._outqueue, self._maxtasks)
                             )
             self._pool.append(w)
             w.name = w.name.replace('Process', 'PoolWorker')
