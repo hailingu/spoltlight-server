@@ -69,20 +69,20 @@ class ProcessPool(object):
         #     exitpriority=15
         #     )
 
-    # def _join_exited_workers(self):
-    #     """Cleanup after any worker processes which have exited due to reaching
-    #     their specified lifetime.  Returns True if any workers were cleaned up.
-    #     """
-    #     cleaned = False
-    #     for i in reversed(range(len(self._pool))):
-    #         worker = self._pool[i]
-    #         if worker.exitcode is not None:
-    #             # worker exited
-    #             util.debug('cleaning up worker %d' % i)
-    #             worker.join()
-    #             cleaned = True
-    #             del self._pool[i]
-    #     return cleaned
+    def _join_exited_workers(self):
+        """Cleanup after any worker processes which have exited due to reaching
+        their specified lifetime.  Returns True if any workers were cleaned up.
+        """
+        cleaned = False
+        for i in reversed(range(len(self._pool))):
+            worker = self._pool[i]
+            if worker.exitcode is not None:
+                # worker exited
+                print('cleaning up worker %d' % i)
+                worker.join()
+                cleaned = True
+                del self._pool[i]
+        return cleaned
 
     def _repopulate_pool(self):
         """Bring the number of pool processes up to the specified number,
@@ -97,11 +97,11 @@ class ProcessPool(object):
             w.daemon = True
             w.start()
 
-    # def _maintain_pool(self):
-    #     """Clean up any exited workers and start replacements for them.
-    #     """
-    #     if self._join_exited_workers():
-    #         self._repopulate_pool()
+    def _maintain_pool(self):
+        """Clean up any exited workers and start replacements for them.
+        """
+        if self._join_exited_workers():
+            self._repopulate_pool()
 
     def _setup_queues(self):
         self._inqueue = self._ctx.SimpleQueue()
