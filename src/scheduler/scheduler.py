@@ -25,3 +25,6 @@ class Scheduler(ABC):
     def stop(self, flow_id):
         pass
         
+    @abstractmethod
+    def shutdown(self):
+        pass

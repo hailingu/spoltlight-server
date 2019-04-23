@@ -1,4 +1,4 @@
-from multiprocessing import Pool
+import multiprocessing
 
 from scheduler.scheduler import Scheduler
 from flow.flow_status import FlowStatus
@@ -18,7 +18,7 @@ class SpotlightScheduler(Scheduler):
         self.scheduler_flow_proc_dic = {}
         self.scheduler_success_flows = {}
         self.scheduler_failded_flows = {}
-        self.scheduler_thread_pools = Pool(processes=4)
+        self.scheduler_thread_pools = multiprocessing.Pool(processes=4)
     
     def submit(self, flow):
         self.scheduler_pending_flows[flow.flow_id] = flow
@@ -37,14 +37,27 @@ class SpotlightScheduler(Scheduler):
 
     def run(self, flow_id):
         flow = self.scheduler_pending_flows[flow_id]
-        proc = self.scheduler_thread_pools.apply_async(flow.run())
-        self.scheduler_flow_proc_dic[flow_id] = proc
-        self.scheduler_running_flows[flow_id] = flow 
+        self.scheduler_running_flows[flow_id] = flow
+        p = multiprocessing.Process(target=flow.run)
+        self.scheduler_flow_proc_dic[flow_id] = p
+        p.start()
+        print('aaaaa')
+        p.kill()
+        print('end')
 
+        # self.scheduler_flow_proc_dic[flow_id] = self.scheduler_thread_pools.apply_async(flow.run)
+        # multiprocessing.processes(target=flow.run())
+        
     def pause(self, flow_id):
         pass
 
     def stop(self, flow_id):
         pass
+
+    def shutdown(self):
+        # self.scheduler_thread_pools.join()
+        # self.scheduler_thread_pools.close()
+        pass
+    
     
 spotlightScheduler = SpotlightScheduler()

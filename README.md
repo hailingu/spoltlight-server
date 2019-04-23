@@ -1,10 +1,10 @@
 # spoltlight-server
 
-This is a backend for the splotlight project
+This is a backend for the splotlight project. This project runs in python 3.7.
 
 ## Install dependency
 
-    pip install scikitlearn
+    pip install scikit-learn
     pip install pandas
     pip install numpy
     pip install scipy

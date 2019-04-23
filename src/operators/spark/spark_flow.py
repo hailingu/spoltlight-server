@@ -1,4 +1,5 @@
 import os
+import time
 
 from flow.flow import Flow
 from flow.flow_status import FlowStatus
@@ -69,15 +70,17 @@ class SparkFlow(Flow):
             if status == None or len(self.flow_failded_operators) > 0:
                 self.flow_status = FlowStatus.FAILED
                 break
-
+        
         self.flow_status = FlowStatus.SUCCESS
 
         self.flow_scheduler_inst.scheduler_running_flows.pop(self.flow_id)
-        self.flow_scheduler_inst.scheduler_flow_proc_dic.pop(self.flow_id) 
+        print(self.flow_scheduler_inst.scheduler_flow_proc_dic)
+        
+        # self.flow_scheduler_inst.scheduler_flow_proc_dic.pop(self.flow_id)
 
         if self.flow_status == FlowStatus.SUCCESS:
             self.flow_scheduler_inst.scheduler_success_flows[self.flow_id] = self
-            self.flow_scheduler_inst.scheduler_pending_flows.pop[self.flow_id]
+            self.flow_scheduler_inst.scheduler_pending_flows.pop(self.flow_id)
         elif self.flow_status == FlowStatus.FAILED:
             self.flow_scheduler_inst.scheduler_failded_flows[self.flow_id] = self
 
