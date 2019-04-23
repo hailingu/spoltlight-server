@@ -15,9 +15,10 @@ class SpotlightScheduler(Scheduler):
     def __init__(self):
         self.scheduler_pending_flows = {}
         self.scheduler_running_flows = {}
+        self.scheduler_flow_proc_dic = {}
         self.scheduler_success_flows = {}
         self.scheduler_failded_flows = {}
-        self.scheduler_thread_pools = Pool()
+        self.scheduler_thread_pools = Pool(processes=4)
     
     def submit(self, flow):
         self.scheduler_pending_flows[flow.flow_id] = flow
@@ -36,10 +37,9 @@ class SpotlightScheduler(Scheduler):
 
     def run(self, flow_id):
         flow = self.scheduler_pending_flows[flow_id]
-        # self.scheduler_thread_pools.apply_async(flow.run())
-        flow.start()
-        self.scheduler_running_flows[flow_id] = flow
-        self.scheduler_pending_flows.pop(flow_id)
+        proc = self.scheduler_thread_pools.apply_async(flow.run())
+        self.scheduler_flow_proc_dic[flow_id] = proc
+        self.scheduler_running_flows[flow_id] = flow 
 
     def pause(self, flow_id):
         pass

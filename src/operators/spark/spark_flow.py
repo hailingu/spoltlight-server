@@ -1,5 +1,4 @@
 import os
-import threading
 
 from flow.flow import Flow
 from flow.flow_status import FlowStatus
@@ -8,11 +7,10 @@ from operators.operator_status import OperatorStatus
 from operators.spark.spark_operator_manger import sparkOperatorManager
 
 
-class SparkFlow(Flow, threading.Thread):
+class SparkFlow(Flow):
     '''Spotlight spark flow'''
 
     def __init__(self):
-        threading.Thread.__init__(self)
         self.flow_pending_operators = {}
         self.flow_running_operators = {}
         self.flow_success_operators = {}
@@ -23,7 +21,9 @@ class SparkFlow(Flow, threading.Thread):
         self.flow_run_mode = 'script'
         self.flow_local = None
         self.flow_scheduler = None
+        self.flow_scheduler_inst = None
         self.flow_working_directory = None
+    
 
     def init(self, flow_json):
         self.flow_flow_json = flow_json
@@ -71,6 +71,16 @@ class SparkFlow(Flow, threading.Thread):
                 break
 
         self.flow_status = FlowStatus.SUCCESS
+
+        self.flow_scheduler_inst.scheduler_running_flows.pop(self.flow_id)
+        self.flow_scheduler_inst.scheduler_flow_proc_dic.pop(self.flow_id) 
+
+        if self.flow_status == FlowStatus.SUCCESS:
+            self.flow_scheduler_inst.scheduler_success_flows[self.flow_id] = self
+            self.flow_scheduler_inst.scheduler_pending_flows.pop[self.flow_id]
+        elif self.flow_status == FlowStatus.FAILED:
+            self.flow_scheduler_inst.scheduler_failded_flows[self.flow_id] = self
+
         return self.flow_status  
     
     def __flow_parser__(self):
