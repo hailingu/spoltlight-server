@@ -1,12 +1,12 @@
 import multiprocessing
 
 
-class Task:
+class Task(multiprocessing.Process):
     '''scheduler running task'''
 
-    def __init__(self, flow):
-        self.flow = flow
-        self.proc = multiprocessing.Process(target=flow.run)
+    def __init__(self, task):
+        self.task = task
+        self.proc = multiprocessing.Process(target=task.run)
         # self.proc.daemon = True
 
     def run(self):
