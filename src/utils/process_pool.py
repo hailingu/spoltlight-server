@@ -1,10 +1,13 @@
 import multiprocessing
 import queue
+import time
+import threading
 import os
 
 
 RUN = 1
 CLOSE = 0
+TERMINATE = 2
 
 class ProcessPool(object):
     '''
@@ -32,19 +35,20 @@ class ProcessPool(object):
         self._pool = []
         self._repopulate_pool()
 
-        # self._worker_handler = threading.Thread(
-        #     target=Pool._handle_workers,
-        #     args=(self, )
-        #     )
-        # self._worker_handler.daemon = True
-        # self._worker_handler._state = RUN
-        # self._worker_handler.start()
+        self._worker_handler = threading.Thread(
+            target=ProcessPool._handle_workers,
+            args=(self, )
+            )
+        
+        self._worker_handler.daemon = True
+        self._worker_handler._state = RUN
+        self._worker_handler.start()
 
-        # self._task_handler = threading.Thread(
-        #     target=Pool._handle_tasks,
-        #     args=(self._taskqueue, self._quick_put, self._outqueue,
-        #           self._pool, self._cache)
-        #     )
+        self._task_handler = threading.Thread(
+            target=ProcessPool._handle_tasks,
+            args=(self._taskqueue, self._quick_put, self._outqueue,
+                  self._pool, self._cache)
+            )
         # self._task_handler.daemon = True
         # self._task_handler._state = RUN
         # self._task_handler.start()
@@ -92,7 +96,6 @@ class ProcessPool(object):
             w.name = w.name.replace('Process', 'PoolWorker')
             w.daemon = True
             w.start()
-            # util.debug('added worker')
 
     # def _maintain_pool(self):
     #     """Clean up any exited workers and start replacements for them.
@@ -255,64 +258,63 @@ class ProcessPool(object):
     #     )
     #     return result
 
-    # @staticmethod
-    # def _handle_workers(pool):
-    #     thread = threading.current_thread()
+    @staticmethod
+    def _handle_workers(pool):
+        thread = threading.current_thread()
 
-    #     # Keep maintaining workers until the cache gets drained, unless the pool
-    #     # is terminated.
-    #     while thread._state == RUN or (pool._cache and thread._state != TERMINATE):
-    #         pool._maintain_pool()
-    #         time.sleep(0.1)
-    #     # send sentinel to stop workers
-    #     pool._taskqueue.put(None)
-    #     util.debug('worker handler exiting')
+        # Keep maintaining workers until the cache gets drained, unless the pool
+        # is terminated.
+        while thread._state == RUN or (pool._cache and thread._state != TERMINATE):
+            pool._maintain_pool()
+            time.sleep(0.1)
+        # send sentinel to stop workers
+        pool._taskqueue.put(None)
+    
+    @staticmethod
+    def _handle_tasks(taskqueue, put, outqueue, pool, cache):
+        thread = threading.current_thread()
 
-    # @staticmethod
-    # def _handle_tasks(taskqueue, put, outqueue, pool, cache):
-    #     thread = threading.current_thread()
+        for taskseq, set_length in iter(taskqueue.get, None):
+            task = None
+            try:
+                # iterating taskseq cannot fail
+                for task in taskseq:
+                    if thread._state:
+                        print('task handler found thread._state != RUN')
+                        break
+                    try:
+                        put(task)
+                    except Exception as e:
+                        job, idx = task[:2]
+                        try:
+                            cache[job]._set(idx, (False, e))
+                        except KeyError:
+                            pass
+                else:
+                    if set_length:
+                        print('doing set_length()')
+                        idx = task[1] if task else -1
+                        set_length(idx + 1)
+                    continue
+                break
+            finally:
+                task = taskseq = job = None
+        else:
+            print('task handler got sentinel')
 
-    #     for taskseq, set_length in iter(taskqueue.get, None):
-    #         task = None
-    #         try:
-    #             # iterating taskseq cannot fail
-    #             for task in taskseq:
-    #                 if thread._state:
-    #                     util.debug('task handler found thread._state != RUN')
-    #                     break
-    #                 try:
-    #                     put(task)
-    #                 except Exception as e:
-    #                     job, idx = task[:2]
-    #                     try:
-    #                         cache[job]._set(idx, (False, e))
-    #                     except KeyError:
-    #                         pass
-    #             else:
-    #                 if set_length:
-    #                     util.debug('doing set_length()')
-    #                     idx = task[1] if task else -1
-    #                     set_length(idx + 1)
-    #                 continue
-    #             break
-    #         finally:
-    #             task = taskseq = job = None
-    #     else:
-    #         util.debug('task handler got sentinel')
+        try:
+            # tell result handler to finish when cache is empty
+            print('task handler sending sentinel to result handler')
+            outqueue.put(None)
 
-    #     try:
-    #         # tell result handler to finish when cache is empty
-    #         util.debug('task handler sending sentinel to result handler')
-    #         outqueue.put(None)
+            # tell workers there is no more work
+            print('task handler sending sentinel to workers')
+            for p in pool:
+                put(None)
+        except OSError:
+            print('task handler got OSError when sending sentinels')
 
-    #         # tell workers there is no more work
-    #         util.debug('task handler sending sentinel to workers')
-    #         for p in pool:
-    #             put(None)
-    #     except OSError:
-    #         util.debug('task handler got OSError when sending sentinels')
-
-    #     util.debug('task handler exiting')
+        print('task handler exiting')
 
     # @staticmethod
     # def _handle_results(outqueue, get, cache):
