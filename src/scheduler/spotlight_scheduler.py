@@ -19,7 +19,7 @@ class SpotlightScheduler(Scheduler):
         self.scheduler_running_flows = {}
         self.scheduler_success_flows = {}
         self.scheduler_failded_flows = {}
-        self.scheduler_thread_pools = ProcessPool(processes=4)
+        self.scheduler_thread_pools = ProcessPool(processes=2)
     
     def submit(self, flow):
         self.scheduler_pending_flows[flow.flow_id] = flow
