@@ -25,6 +25,7 @@ class ProcessPool(object):
         self._cache = {}
         self._state = RUN
         self._maxtasks = maxtasks
+        self._worker_process_map = {}
 
         if processes is None:
             processes = os.cpu_count() or 1
