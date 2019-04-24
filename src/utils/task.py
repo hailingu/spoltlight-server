@@ -1,19 +1,18 @@
-import multiprocessing
+from abc import ABC
 
 
-class Task(multiprocessing.Process):
-    '''scheduler running task'''
+class Task(ABC):
+    '''base task class in spotlight'''
+    
+    pass
 
-    def __init__(self, task):
-        self.task = task
-        self.proc = multiprocessing.Process(target=task.run)
-        # self.proc.daemon = True
 
-    def run(self):
-        self.proc.start()
+class FlowTask(Task):
+    '''flow task in spotlight'''
 
-    def terminal(self):
-        self.proc.terminate()
+    def __init__(self, flow):
+        self.flow = flow
+        self.proc = None
 
-    def kill(self):
-        self.proc.kill()
+    def set_proc(self, proc):
+        self.proc = proc
