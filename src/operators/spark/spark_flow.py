@@ -74,10 +74,7 @@ class SparkFlow(Flow):
         self.flow_status = FlowStatus.SUCCESS
 
         self.flow_scheduler_inst.scheduler_running_flows.pop(self.flow_id)
-        print(self.flow_scheduler_inst.scheduler_flow_proc_dic)
-        
-        # self.flow_scheduler_inst.scheduler_flow_proc_dic.pop(self.flow_id)
-
+    
         if self.flow_status == FlowStatus.SUCCESS:
             self.flow_scheduler_inst.scheduler_success_flows[self.flow_id] = self
             self.flow_scheduler_inst.scheduler_pending_flows.pop(self.flow_id)
