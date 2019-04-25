@@ -53,6 +53,6 @@ class ProcessFlowManager:
         if len(self.running_process) <= self.max_process:
             lock.acquire()
             proc = self.pending_process.pop(process_name)
-            lock.release()
             self.running_process[proc.name] = proc
+            lock.release()
             proc.start()
