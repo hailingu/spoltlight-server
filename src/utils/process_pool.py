@@ -7,7 +7,7 @@ import itertools
 from multiprocessing.pool import MaybeEncodingError, RUN, CLOSE, TERMINATE, ApplyResult, ExceptionWithTraceback
 from multiprocessing import util, get_context
 
-from utils.task import Task
+from utils.task import Task, FlowTask
 
 def _helper_reraises_exception(ex):
     'Pickle-able helper function for use by _guarded_task_generation.'
@@ -15,27 +15,24 @@ def _helper_reraises_exception(ex):
 
 def worker(inqueue, outqueue, initializer=None, initargs=(), maxtasks=None,
            wrap_exception=False):
-    print('.....++++', 1)
     if (maxtasks is not None) and not (isinstance(maxtasks, int)
                                        and maxtasks >= 1):
         raise AssertionError("Maxtasks {!r} is not valid".format(maxtasks))
     put = outqueue.put
     get = inqueue.get
-    # if hasattr(inqueue, '_writer'):
-    #     inqueue._writer.close()
-    #     outqueue._reader.close()
+    if hasattr(inqueue, '_writer'):
+        inqueue._writer.close()
+        outqueue._reader.close()
 
     if initializer is not None:
         initializer(*initargs)
 
     completed = 0
-    print('.....++++', 2)
-    # inqueue.put('sb')
     while maxtasks is None or (maxtasks and completed < maxtasks):
         try:
-            print('.....++++', 'stuck1')
+            print('process worker try get task')
             task = get()
-            print('.....++++', 'stuck2')
+            print('process worker get task', task)
         except (EOFError, OSError):
             util.debug('worker got EOFError or OSError -- exiting')
             break
@@ -52,7 +49,7 @@ def worker(inqueue, outqueue, initializer=None, initargs=(), maxtasks=None,
             # if wrap_exception and func is not _helper_reraises_exception:
             #     e = ExceptionWithTraceback(e, e.__traceback__)
             # result = (False, e)
-            print('exception block')
+            print('exception block1')
         try:
             # put((job, i, result))
             print('do nothing')
@@ -61,10 +58,15 @@ def worker(inqueue, outqueue, initializer=None, initargs=(), maxtasks=None,
             # util.debug("Possible encoding error while sending result: %s" % (
             #     wrapped))
             # put((job, i, (False, wrapped)))
-            print('exception block')
+            print('exception block2')
         # task = job = result = func = args = kwds = None
         completed += 1
     util.debug('worker exiting after %d tasks' % completed)
+
+
+class B:
+    def __init__(self):
+        self.name = 'B'
 
 class ProcessPool:
     '''spotlight process pool'''
@@ -116,21 +118,21 @@ class ProcessPool:
         self._task_handler._state = RUN
         self._task_handler.start()
 
-        self._result_handler = threading.Thread(
-            target=ProcessPool._handle_results,
-            args=(self._outqueue, self._outqueue, self._cache)
-            )
-        self._result_handler.daemon = False
-        self._result_handler._state = RUN
-        self._result_handler.start()
+        # self._result_handler = threading.Thread(
+        #     target=ProcessPool._handle_results,
+        #     args=(self._outqueue, self._outqueue, self._cache)
+        #     )
+        # self._result_handler.daemon = False
+        # self._result_handler._state = RUN
+        # self._result_handler.start()
 
-        self._terminate = util.Finalize(
-            self, ProcessPool._terminate_pool,
-            args=(self._taskqueue, self._inqueue, self._outqueue, self._pool,
-                  self._worker_handler, self._task_handler,
-                  self._result_handler, self._cache),
-            exitpriority=15
-            )
+        # self._terminate = util.Finalize(
+        #     self, ProcessPool._terminate_pool,
+        #     args=(self._taskqueue, self._inqueue, self._outqueue, self._pool,
+        #           self._worker_handler, self._task_handler,
+        #           self._result_handler, self._cache),
+        #     exitpriority=15
+        #     )
 
     def _setup_queues(self):
         self._inqueue = self._ctx.SimpleQueue()
@@ -190,14 +192,14 @@ class ProcessPool:
             raise ValueError("Pool not running")
         result = ApplyResult(self._cache, callback, error_callback)
         self._taskqueue.put(([(result._job, 0, task, args, kwds)], None))
-        print(self._taskqueue)
+        print(self._taskqueue.qsize())
         return result
 
     def terminate(self):
         util.debug('terminating pool')
         self._state = TERMINATE
         self._worker_handler._state = TERMINATE
-        self._terminate()
+        # self._terminate()
 
     @staticmethod
     def _handle_tasks(taskqueue, inqueue, outqueue, pool, cache):
@@ -205,59 +207,72 @@ class ProcessPool:
 
         for taskseq, set_length in iter(taskqueue.get, None):
             task = None
-           
+            print('taskqueue', taskqueue.qsize())
             try:
-                print('++++', 'ere0', taskseq)
-                # iterating taskseq cannot fail
                 for task in taskseq:
-                    print('+++++', task)
-                    print('state', thread._state)
-                    if thread._state:
-                        util.debug('task handler found thread._state != RUN')
-                        break
-                    print('+++++', 'ere', task)
-                    try:
-                        inqueue.put(task)
-                        inqueue.put('sb')
-                    except Exception as e:
-                        # job, idx = task[:2]
-                        # try:
-                        #     cache[job]._set(idx, (False, e))
-                        # except KeyError:
-                        #     pass
-                        print('exception block')
-                    print('+++++', 'ere1')
-
-                else:
-                    print('+++++', 'ere2', set_length)
-                    # if set_length:
-                    #     util.debug('doing set_length()')
-                    #     idx = task[1] if task else -1
-                    #     set_length(idx + 1)
-                    # continue
-                break
-            finally:
-                print('a')
-                task = taskseq = job = None
-        else:
-            print('b')
-            util.debug('task handler got sentinel')
-
-        print('c')
-        try:
-            # tell result handler to finish when cache is empty
-            util.debug('task handler sending sentinel to result handler')
-            outqueue.put(None)
-
-            # tell workers there is no more work
-            util.debug('task handler sending sentinel to workers')
-            for p in pool:
-                inqueue.put(None)
+                    print(task)
+                try:
+                    inqueue.put(FlowTask(None))
+                except Exception as e:
+                    print('error', e)
         
-        except OSError:
-            util.debug('task handler got OSError when sending sentinels')
+            except Exception as e:
+                print(e)
 
-        util.debug('task handler exiting')
+        #     try:
+        #         print('++++', 'ere0', taskseq)
+        #         # iterating taskseq cannot fail
+        #         for task in taskseq:
+        #             print('+++++', task)
+        #             print('state', thread._state)
+        #             if thread._state:
+        #                 util.debug('task handler found thread._state != RUN')
+        #                 break
+        #             print('+++++', 'ere', task)
+        #             try:
+        #                 # inqueue.put(task)
+        #                 inqueue.put(FlowTask(None))
+        #                 print('------------', inqueue.get())
+
+        #             except Exception as e:
+        #                 # job, idx = task[:2]
+        #                 # try:
+        #                 #     cache[job]._set(idx, (False, e))
+        #                 # except KeyError:
+        #                 #     pass
+        #                 print('exception block0', e)
+        #             print('+++++', 'ere1')
+
+        #         else:
+        #             print('+++++', 'ere2', set_length)
+        #             # if set_length:
+        #             #     util.debug('doing set_length()')
+        #             #     idx = task[1] if task else -1
+        #             #     set_length(idx + 1)
+        #             # continue
+        #         break
+        #     finally:
+        #         print('a')
+        #         task = taskseq = job = None
+        # else:
+        #     print('b')
+        #     util.debug('task handler got sentinel')
+
+        # print('c')
+        # try:
+        #     # tell result handler to finish when cache is empty
+        #     util.debug('task handler sending sentinel to result handler')
+        #     outqueue.put(None)
+
+        #     # tell workers there is no more work
+        #     util.debug('task handler sending sentinel to workers')
+        #     for p in pool:
+        #         inqueue.put(None)
+        
+        # except OSError:
+        #     util.debug('task handler got OSError when sending sentinels')
+
+        # util.debug('task handler exiting')
 
     @staticmethod
     def _handle_results(outqueue, get, cache):
