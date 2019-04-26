@@ -1,5 +1,5 @@
-from operators.scikitlearn.scikitlearn_flow import ScikitlearnFlow
-from operators.spark.spark_flow import SparkFlow
+from flow.scikitlearn_flow import ScikitlearnFlow
+from flow.spark_flow import SparkFlow
 
 
 class FlowManager:
