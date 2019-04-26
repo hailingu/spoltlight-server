@@ -20,12 +20,15 @@ def submit_flow():
 def run_flow():
     if request.method == 'POST':
         flow_id = request.json['flow_id']
+        SchedulerFactory.run_flow(flow_id)
 
-
+@app.route('/log_flow', method=['POST'])
+def log_flow():
+    if request.method == 'POST':
+        flow_id = request.json['flow_id']
 
 if __name__ == '__main__':
     app.debug = True
     app.run(host='127.0.0.1', port=5000, threaded=True)
-    scheduler = SchedulerFactory.get_scheduler('')
-    scheduler.shutdown()
+    SchedulerFactory.shutdown()
     

@@ -28,5 +28,13 @@ class SchedulerFactory:
 
         return flow_status
 
+    @staticmethod
+    def shutdown():
+        try:
+            spotlightScheduler.shutdown()
+            azkabanScheduler.shutdown()
+        except Exception as e:
+            print(e)
+
 
     
