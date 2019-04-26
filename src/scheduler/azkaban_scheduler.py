@@ -7,6 +7,7 @@ from operators.spark.spark_operator import SparkOperator
 from utils.utils import mkdir
 from operators.spark.spark_flow import SparkFlow
 
+
 class AzkabanScheduler(Scheduler):
     '''This is the azkabanSchedule'''
     
@@ -61,7 +62,8 @@ class AzkabanScheduler(Scheduler):
         azkabanFlowReaderAndWriterHelper.close()
         os.system('cd ' + flow.flow_working_directory + '/azkaban/&&zip -r ' + flow.flow_id + '.zip .&&mv ' + flow.flow_id + '.zip ..')
         self.scheduler_azkaban_client.login()
-        self.scheduler_azkaban_client.upload(flow.flow_working_directory + '/' + flow.flow_id, flow.flow_id)        
+        self.scheduler_azkaban_client.upload(flow.flow_working_directory + '/' + flow.flow_id, flow.flow_id)
+
        
 class AzkabanClient:
     def __init__(self):
@@ -167,3 +169,4 @@ class AzkabanFlowReadAndWriteHelper:
         
         return prefix_space
 
+azkabanScheduler = AzkabanScheduler()
