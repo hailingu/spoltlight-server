@@ -38,8 +38,10 @@ class SpotlightScheduler(Scheduler):
     def run(self, flow_id):
         flow = self.scheduler_pending_flows[flow_id]
         self.scheduler_running_flows[flow_id] = flow
+        flow.flow_status = FlowStatus.RUNNING
         self.scheduler_process_manager.submit_flow(flow)
         self.scheduler_process_manager.run(flow.flow_id)
+        return flow.flow_status
         
     def pause(self, flow_id):
         pass

@@ -5,7 +5,8 @@ import os
 from scheduler.scheduler import Scheduler
 from operators.spark.spark_operator import SparkOperator
 from utils.utils import mkdir
-from operators.spark.spark_flow import SparkFlow
+from flow.spark_flow import SparkFlow
+from flow.flow_status import FlowStatus
 
 
 class AzkabanScheduler(Scheduler):
@@ -27,13 +28,16 @@ class AzkabanScheduler(Scheduler):
         self.scheduler_pending_flows[flow.flow_id] = flow
         self.scheduler_azkaban_client.create_project(flow.flow_id)
         self.__init__azkaban_flow__(flow.flow_id)
+        flow.flow_status =  FlowStatus.PENDING
 
     def get_status(self, flow_id):
         pass
 
     def run(self, flow_id):
+        flow = self.scheduler_pending_flows[flow_id]
         self.scheduler_azkaban_client.execute_flow(flow_id, flow_id)
-        return None
+        flow.flow_status =  FlowStatus.RUNNING
+        return flow.flow_status
         
     def pause(self, flow_id):
         pass
