@@ -104,6 +104,7 @@ class SparkFlow(Flow):
                      operator['params']['local'] = operator['local']
                      operator['params']['running-mode'] =  self.flow_run_mode
                      operator['params']['op-working-directory'] = self.flow_working_directory
+                     operator['params']['deps'] = operator['deps']
                      operator_manager = sparkOperatorManager.get_manager(operator['op-category'])
                      spark_operator = operator_manager.get_operator(operator['op-name'])()
                      spark_operator.op_running_id = idGenerator.operator_running_id_generator(self.flow_id, op_index)
@@ -131,6 +132,7 @@ class SparkFlow(Flow):
                     operator['params']['local'] = operator['local']
                     operator['params']['running-mode'] =  self.flow_run_mode
                     operator['params']['op-working-directory'] = self.flow_working_directory
+                    operator['params']['deps'] = operator['deps']
                     operator_manager = sparkOperatorManager.get_manager(operator['op-category'])
                     spark_operator = operator_manager.get_operator(operator['op-name'])()
                     spark_operator.op_running_id = idGenerator.operator_running_id_generator(self.flow_id, op_index)

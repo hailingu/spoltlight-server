@@ -48,3 +48,6 @@ class SparkOperator(Operator):
 
     def get_status(self):
         return self.op_status
+
+    def azkaban_script(self):
+        return None

@@ -3,7 +3,6 @@ import multiprocessing
 from scheduler.scheduler import Scheduler
 from flow.flow_status import FlowStatus
 from utils.process_manager import ProcessFlowManager
-from utils.task import FlowTask
 
 
 class SpotlightScheduler(Scheduler):
@@ -41,27 +40,15 @@ class SpotlightScheduler(Scheduler):
         self.scheduler_running_flows[flow_id] = flow
         self.scheduler_process_manager.submit_flow(flow)
         self.scheduler_process_manager.run(flow.flow_id)
-
-        # p = multiprocessing.Process(target=flow.run)
-        # self.scheduler_flow_proc_dic[flow_id] = p
-        # p.start()
-        # print('aaaaa')
-        # p.kill()
-        # print('end')
-
-        # self.scheduler_flow_proc_dic[flow_id] = self.scheduler_thread_pools.apply_async(flow.run)
-        # multiprocessing.processes(target=flow.run())
         
     def pause(self, flow_id):
         pass
 
     def stop(self, flow_id):
-        pass
+        self.scheduler_process_manager.kill(flow_id)
 
     def shutdown(self):
-        # self.scheduler_thread_pools.join()
-        # self.scheduler_thread_pools.close()
-        pass
+        self.scheduler_process_manager.shutdown()
     
     
 spotlightScheduler = SpotlightScheduler()

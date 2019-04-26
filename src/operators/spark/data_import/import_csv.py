@@ -36,7 +36,6 @@ class ImportCSV(SparkOperator):
 
         self.input_path = self.op_json_param['input-path']
         self.delimiter = self.op_json_param['delimiter'] if 'delimiter' in self.op_json_param else ','
- 
 
     def run_function_mode(self):
         return self.op_status
@@ -53,3 +52,12 @@ class ImportCSV(SparkOperator):
         self.op_status = sub_proc.returncode
         return self.op_status
 
+
+    def azkaban_script(self):
+        run_command = 'spark-submit --master '
+        if self.op_local:
+            run_command = run_command + 'local[2] '
+            
+        self.op_result.append(self.op_working_directory + 'output/' + self.op_json_param['op-index'] + '-output')
+        run_command = run_command + self.op_script_location + ' ' + self.input_path + ' ' + self.op_result[0] + ' ' + self.delimiter
+        return run_command

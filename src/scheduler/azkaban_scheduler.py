@@ -2,15 +2,67 @@ import requests
 import json
 import os
 
-
 from scheduler.scheduler import Scheduler
+from operators.spark.spark_operator import SparkOperator
+from utils.utils import mkdir
+from operators.spark.spark_flow import SparkFlow
 
 class AzkabanScheduler(Scheduler):
     '''This is the azkabanSchedule'''
     
-    pass
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(cls, '_instance'):
+            cls._instance = super().__new__(cls)
+        return cls._instance
 
+    def __init__(self):
+        self.scheduler_pending_flows = {}
+        self.scheduler_running_flows = {}
+        self.scheduler_success_flows = {}
+        self.scheduler_failded_flows = {}
+        self.scheduler_azkaban_client = AzkabanClient()
+    
+    def submit(self, flow):
+        self.scheduler_pending_flows[flow.flow_id] = flow
+        self.scheduler_azkaban_client.create_project(flow.flow_id)
+        self.__init__azkaban_flow__(flow.flow_id)
 
+    def get_status(self, flow_id):
+        pass
+
+    def run(self, flow_id):
+        self.scheduler_azkaban_client.execute_flow(flow_id, flow_id)
+        return None
+        
+    def pause(self, flow_id):
+        pass
+
+    def stop(self, flow_id):
+        pass
+
+    def shutdown(self):
+        pass
+
+    def __init__azkaban_flow__(self, flow_id):
+        if not flow_id in self.scheduler_pending_flows:
+            return 
+
+        flow = self.scheduler_pending_flows[flow_id]
+        mkdir(flow.flow_working_directory)
+        mkdir(flow.flow_working_directory + 'azkaban/')
+        mkdir(flow.flow_working_directory + 'output/')
+        os.system('cp resources/azkaban_job_template/flow20.project ' + flow.flow_working_directory + 'azkaban/')
+
+        azkabanFlowReaderAndWriterHelper = AzkabanFlowReadAndWriteHelper(flow.flow_working_directory + 'azkaban/' + flow.flow_id + '.flow')
+        for op_name in flow.flow_pending_operators:
+            os.system('cp ' +  flow.flow_pending_operators[op_name].op_script_location + ' ' + flow.flow_working_directory + '/azkaban/')
+            azkabanFlowReaderAndWriterHelper.write(flow.flow_pending_operators[op_name])
+
+        azkabanFlowReaderAndWriterHelper.close()
+        os.system('cd ' + flow.flow_working_directory + '/azkaban/&&zip -r ' + flow.flow_id + '.zip .&&mv ' + flow.flow_id + '.zip ..')
+        self.scheduler_azkaban_client.login()
+        self.scheduler_azkaban_client.upload(flow.flow_working_directory + '/' + flow.flow_id, flow.flow_id)        
+       
 class AzkabanClient:
     def __init__(self):
         self.session_id = None
@@ -30,8 +82,6 @@ class AzkabanClient:
         response = requests.post(self.url, data=data, headers=headers)
         response_json = json.loads(response.content)
         self.session_id = response_json['session.id']
-        print(self.session_id)
-
 
     def create_project(self, project_name, description=''):
         formated_create_url = self.create_url.format(self.session_id, project_name, description)
@@ -50,36 +100,31 @@ class AzkabanClient:
         format_execute_flow = self.execute_flow_url.format(self.session_id, project_id, flow_id)
         os.system(format_execute_flow)
 
-azkabanClient = AzkabanClient()
 
+class AzkabanNodeHelper:
 
-class AzkabanSparkOperator:
-
-    def __init__(self, operator, flow_id):
-        self.name = str(operator['op-index'])
-        self.op_type = 'command'
-        self.spark_operator = SparkOperatorManager.get_operator(operator['op-name'], operator['op-category'], operator['params'])
-        self.command = 'spark-submit --master local[2] '
-        self.deps = operator['deps'] if len(operator['deps']) > 0 else None
-        self.flow_id = flow_id
-
+    def __init__(self, operator):
+        self.node_name = str(operator['op-index'])
+        self.node_type = 'command'
+        self.node_operator = operator 
+        self.node_command = operator.azkaban_script()
+        self.node_deps = operator.op_json_param['deps'] if len(operator.op_json_param['deps']) > 0 else None
 
     def get_deps(self, prefix_space):
         deps_str = ''
-        if self.deps == None:
+        if self.node_deps == None:
             return deps_str
         
-        for dep in self.deps:
-            deps_str = prefix_space + '    - ' + dep + '\n'
+        for dep in self.node_deps:
+            deps_str = prefix_space + '    - ' + dep['op-index'] + '\n'
 
         return deps_str
 
-
     def to_string(self, prefix_space):
-        op_str = prefix_space + '- name: ' + self.name + '\n'
-        op_str = op_str + prefix_space + '  type: ' + self.op_type + '\n'
+        op_str = prefix_space + '- name: ' + self.node_name + '\n'
+        op_str = op_str + prefix_space + '  type: ' + self.node_type + '\n'
         op_str = op_str + prefix_space + '  config: ' + '\n'
-        op_str = op_str + prefix_space + '    command: ' + self.command + self.spark_operator.to_string() + '\n'
+        op_str = op_str + prefix_space + '    command: ' + self.node_command + '\n'
         op_str = op_str + prefix_space + '  dependsOn: \n' + self.get_deps(prefix_space) + '\n'
         return op_str
 
@@ -121,3 +166,4 @@ class AzkabanFlowReadAndWriteHelper:
             prefix_space += ' '
         
         return prefix_space
+

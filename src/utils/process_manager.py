@@ -31,22 +31,40 @@ class ProcessFlowManager:
         self.running_process = {}
         self.pending_process = {}
         self.failed_process = set()
+        self.killed_process = set()
         self.success_process = set()
         self.max_process = 5
         self._worker_handler = threading.Thread(target=worker, args=(self,))
         self._worker_handler.start()
 
     def kill(self, process_name):
-        self.running_process[process_name].kill()
+        lock.acquire()
+        if process_name in self.running_process:
+            self.running_process[process_name].kill()    
+            self.running_process.pop(process_name)
+            self.killed_process.add(process_name)
+        lock.release()
 
     def terminate(self, process_name):
         self.running_process[process_name].terminate()
+        lock.acquire()
+        self.running_process.pop(process_name)
+        self.killed_process.add(process_name)
+        lock.release()
 
     def submit_flow(self, flow):
         proc = multiprocessing.Process(target=flow.run)
         proc.name = flow.flow_id
         lock.acquire()
         self.pending_process[proc.name] = proc
+        lock.release()
+
+    def shutdown(self):
+        lock.acquire()
+        for poc_name in self.running_process:
+            proc = self.running_process[poc_name]
+            proc.kill()
+            proc.join()
         lock.release()
 
     def run(self, process_name):
@@ -56,3 +74,5 @@ class ProcessFlowManager:
             self.running_process[proc.name] = proc
             lock.release()
             proc.start()
+        else:
+            self.kill(process_name)
