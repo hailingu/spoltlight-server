@@ -9,6 +9,7 @@ class ImportCSV(SparkOperator):
 
     '''import csv formate data'''
 
+
     OP_NAME = 'import-csv'
     OP_CATEGORY = 'data-import'
 
@@ -50,7 +51,6 @@ class ImportCSV(SparkOperator):
         sub_proc.wait()
         self.op_status = sub_proc.returncode
         return self.op_status
-
 
     def azkaban_script(self):
         run_command = 'spark-submit --master '

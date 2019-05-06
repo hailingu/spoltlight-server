@@ -54,8 +54,23 @@ class Train(SparkOperator):
         sub_proc = None
         if run_command != None:
             sub_proc = subprocess.Popen(run_command, stdout=subprocess.PIPE, shell=True)
-            sub_proc.wait(20)
+            sub_proc.wait()
             return sub_proc.returncode
 
         return None
+
+    def azkaban_script(self):
+        run_command = 'spark-submit --master '
+        if self.op_local:
+            run_command = run_command + 'local[2] '
+
+        self.op_result.append(self.op_working_directory + 'output/' + self.op_json_param['op-index'] + '-output')
+        input_path = self.op_input_ops[1].get_result(self.op_input_ops_index[1])
+
+        run_command = None
+        if self.model.OP_NAME == 'random-forest':
+            self.model.run_script_mode()
+            run_command = run_command + self.model.op_script_location + input_path + ' ' + self.op_result[0] + ' ' + self.feature_cols + ' ' + self.label_col +  ' ' + self.model.run_args
+
+        return run_command    
     
