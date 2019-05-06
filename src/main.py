@@ -15,7 +15,7 @@ def submit_flow():
         flow = FlowManager.spawn_flow(request.json)
         scheduler = SchedulerFactory.submit_flow(flow)
         scheduler.submit(flow)
-        return 'success'
+        return flow.flow_id
     return 'failed'
 
 
@@ -24,7 +24,8 @@ def run_flow():
     if request.method == 'POST':
         flow_id = request.json['flow_id']
         SchedulerFactory.run_flow(flow_id)
-
+        return 'sucess'
+    return 'none'
 
 @app.route('/log_flow', methods=['POST'])
 def log_flow():

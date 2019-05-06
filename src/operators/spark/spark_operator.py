@@ -25,6 +25,8 @@ class SparkOperator(Operator):
         self.op_script_location = None
         self.op_backend = 'spark'
 
+        self.op_logger = None
+
     @abstractmethod
     def init_operator(self, op_json_param):
         pass

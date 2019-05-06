@@ -6,7 +6,6 @@ from operators.operator_status import OperatorStatus
 from log.logger import Logger
 
 class ImportCSV(SparkOperator):
-
     '''import csv formate data'''
 
 
@@ -24,8 +23,6 @@ class ImportCSV(SparkOperator):
         self.input_path = None
         self.delimiter = None
 
-        self.logger = Logger('import-csv_' + str(self.op_running_id))
-
     def init_operator(self, op_json_param):
         self.op_json_param = op_json_param
         self.op_running_mode = self.op_json_param['running-mode'] if 'running-mode' in self.op_json_param else 'script'
@@ -35,6 +32,7 @@ class ImportCSV(SparkOperator):
             self.op_script_location = os.getcwd() + '/' + self.op_script_location
 
         self.op_working_directory = self.op_json_param['op-working-directory'] if 'op-working-directory' in self.op_json_param else None 
+        self.op_logger = Logger(self.op_working_directory + '/log/import-csv_' + str(self.op_json_param['op-index']))
 
         self.input_path = self.op_json_param['input-path']
         self.delimiter = self.op_json_param['delimiter'] if 'delimiter' in self.op_json_param else ','
@@ -52,7 +50,7 @@ class ImportCSV(SparkOperator):
         sub_proc = subprocess.Popen(run_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
         
         for line in iter(sub_proc.stdout.readline, b''):
-            self.logger.info(line)
+            self.op_logger.info(line)
 
         sub_proc.stdout.close()
         sub_proc.wait()

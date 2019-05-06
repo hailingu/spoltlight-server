@@ -2,6 +2,7 @@ import subprocess
 
 from operators.operator_status import OperatorStatus
 from operators.spark.spark_operator import SparkOperator
+from log.logger import Logger
 
 
 class RemoveDuplicatedRows(SparkOperator):
@@ -27,6 +28,7 @@ class RemoveDuplicatedRows(SparkOperator):
         self.op_running_mode = self.op_json_param['running-mode'] if 'running-mode' in self.op_json_param else 'script'
         self.op_local = bool(self.op_json_param['local']) if 'local' in self.op_json_param else True
         self.op_working_directory = self.op_json_param['op-working-directory'] if 'op-working-directory' in self.op_json_param else None
+        self.op_logger = Logger(self.op_working_directory + '/log/import-csv_' + str(self.op_json_param['op-index']))
 
         self.columns = op_json_param['columns'] if 'columns' in op_json_param else None
 
@@ -41,7 +43,12 @@ class RemoveDuplicatedRows(SparkOperator):
         self.op_result.append(self.op_working_directory + 'output/' + self.op_json_param['op-index'] + '-output')
         run_command = run_command + self.op_script_location + ' ' + self.op_input_ops[0].get_result(self.op_input_ops_index[0]) + ' ' + self.op_result[0] + ' ' + self.columns
         sub_proc = subprocess.Popen(run_command, stdout=subprocess.PIPE, shell=True)
-        sub_proc.wait(20)
+
+        for line in iter(sub_proc.stdout.readline, b''):
+            self.op_logger.info(line)
+
+        sub_proc.stdout.close()
+        sub_proc.wait()
         return sub_proc.returncode
 
     def azkaban_script(self):

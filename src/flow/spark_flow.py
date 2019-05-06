@@ -3,7 +3,7 @@ import time
 
 from flow.flow import Flow
 from flow.flow_status import FlowStatus
-from utils.utils import idGenerator
+from utils.utils import idGenerator, mkdir
 from operators.operator_status import OperatorStatus
 from operators.spark.spark_operator_manger import sparkOperatorManager
 
@@ -30,9 +30,9 @@ class SparkFlow(Flow):
     def init(self, flow_json):
         self.flow_flow_json = flow_json
         self.flow_id = idGenerator()
-        self.flow_pending_operators = self.__flow_parser__()
         self.flow_run_mode = self.flow_flow_json['running-mode'] if 'running-mode' in self.flow_flow_json else 'script'
         self.flow_local = bool(self.flow_flow_json['local']) if 'local' in self.flow_flow_json else True
+        self.flow_scheduler = self.flow_flow_json['scheduler'] if 'scheduler' in self.flow_flow_json else 'default'
 
         if self.flow_run_mode == 'script':
             self.flow_working_directory = ''
@@ -40,7 +40,8 @@ class SparkFlow(Flow):
                 self.flow_working_directory = self.flow_working_directory + os.getcwd() + '/projects/'
              
             self.flow_working_directory = self.flow_working_directory + self.flow_id + '/'
-        
+
+        mkdir(self.flow_working_directory + 'log/')
         self.flow_pending_operators = self.__flow_parser__()
 
 
