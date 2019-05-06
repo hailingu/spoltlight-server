@@ -3,7 +3,6 @@ import subprocess
 
 from operators.spark.spark_operator import SparkOperator
 from operators.operator_status import OperatorStatus
-from id_generator import idGenerator
 
 
 class ImportCSV(SparkOperator):
