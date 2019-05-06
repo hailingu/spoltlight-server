@@ -3,7 +3,7 @@ import subprocess
 
 from operators.spark.spark_operator import SparkOperator
 from operators.operator_status import OperatorStatus
-
+from log.logger import Logger
 
 class ImportCSV(SparkOperator):
 
@@ -23,6 +23,8 @@ class ImportCSV(SparkOperator):
 
         self.input_path = None
         self.delimiter = None
+
+        self.logger = Logger('import-csv_' + str(self.op_running_id))
 
     def init_operator(self, op_json_param):
         self.op_json_param = op_json_param
@@ -48,6 +50,11 @@ class ImportCSV(SparkOperator):
         self.op_result.append(self.op_working_directory + 'output/' + self.op_json_param['op-index'] + '-output')
         run_command = run_command + self.op_script_location + ' ' + self.input_path + ' ' + self.op_result[0] + ' ' + self.delimiter
         sub_proc = subprocess.Popen(run_command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        
+        for line in iter(sub_proc.stdout.readline, b''):
+            self.logger.info(line)
+
+        sub_proc.stdout.close()
         sub_proc.wait()
         self.op_status = sub_proc.returncode
         return self.op_status
