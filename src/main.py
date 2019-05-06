@@ -3,7 +3,7 @@ from flask_cors import CORS
 
 from flow.flow_manager import FlowManager
 from scheduler.scheduler_factory import SchedulerFactory
-from log.log_center import LogCenter
+
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
@@ -34,7 +34,6 @@ def log_flow():
 
 if __name__ == '__main__':
     app.debug = True
-    log_center2 = LogCenter()
     app.run(host='127.0.0.1', port=5000, threaded=True)
     SchedulerFactory.shutdown()
     
