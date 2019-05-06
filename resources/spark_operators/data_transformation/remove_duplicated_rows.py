@@ -14,10 +14,17 @@ if __name__ == "__main__":
         .appName("Remove Duplicated Rows")\
         .getOrCreate()
     
-    input_path = sys.argv[1]
-    output_path = sys.argv[2]
-    columns = sys.argv[3].split(' ')
-    data = spark.read.parquet(input_path)
+    ret_code = 3
+    try:
+        input_path = sys.argv[1]
+        output_path = sys.argv[2]
+        columns = sys.argv[3].split(' ')
+        data = spark.read.parquet(input_path)
 
-    data.dropDuplicates(columns).write.format('parquet').save(output_path)
+        data.dropDuplicates(columns).repartition(5).write.format('parquet').save(output_path)
+    except Exception as e:
+        print(e)
+        ret_code = 4
+
     spark.stop()
+    sys.exit(ret_code) 

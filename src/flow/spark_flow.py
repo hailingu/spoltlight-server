@@ -55,8 +55,10 @@ class SparkFlow(Flow):
                     dependency_ready = dependency_ready and (input_op.op_json_param['op-index'] in self.flow_success_operators)
 
                 if dependency_ready:
+                    print('running-op-index: ' + op_index)
                     self.flow_running_operators[op_index] = operator
                     status = operator.run()
+                    print('op-running-result: ' + str(status))
 
                 if status == OperatorStatus.SUCCESS:
                     self.flow_running_operators.pop(op_index)
@@ -96,7 +98,7 @@ class SparkFlow(Flow):
         while len(operator_pending_list) > 0:
             for operator in operator_pending_list:
                 op_index = operator['op-index']
-            
+                
                 if operator['op-index'] in operator_processed_list:
                     continue
             
@@ -141,5 +143,5 @@ class SparkFlow(Flow):
                     spark_operator.init_operator(operator['params'])
                     operator_processed_list[op_index] = spark_operator
                     operator_pending_list.remove(operator)
-            break
+                break
         return operator_processed_list

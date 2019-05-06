@@ -16,7 +16,7 @@ class RemoveDuplicatedRows(SparkOperator):
         self.op_input_num = 1
         self.op_output_num = 1
         self.op_status = OperatorStatus.INIT
-        self.op_script_location = 'resources/spark_operators/data_iport/remove_duplicated_rows.py'
+        self.op_script_location = 'resources/spark_operators/data_transformation/remove_duplicated_rows.py'
         self.op_backend = 'spark'
 
         self.columns = None
