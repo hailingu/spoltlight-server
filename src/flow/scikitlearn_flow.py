@@ -1,4 +1,4 @@
-from id_generator import idGenerator
+from utils.utils import idGenerator
 from flow.flow import Flow
 from flow.flow_status import FlowStatus
 from operators.operator_status import OperatorStatus

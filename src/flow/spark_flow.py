@@ -3,7 +3,7 @@ import time
 
 from flow.flow import Flow
 from flow.flow_status import FlowStatus
-from id_generator import idGenerator
+from utils.utils import idGenerator
 from operators.operator_status import OperatorStatus
 from operators.spark.spark_operator_manger import sparkOperatorManager
 
@@ -28,7 +28,7 @@ class SparkFlow(Flow):
 
     def init(self, flow_json):
         self.flow_flow_json = flow_json
-        self.flow_id = idGenerator()
+        self.flow_id = id_generator()
         self.flow_pending_operators = self.__flow_parser__()
         self.flow_run_mode = self.flow_flow_json['running-mode'] if 'running-mode' in self.flow_flow_json else 'script'
         self.flow_local = bool(self.flow_flow_json['local']) if 'local' in self.flow_flow_json else True

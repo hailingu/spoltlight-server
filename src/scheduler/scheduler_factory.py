@@ -1,6 +1,6 @@
 from scheduler.scheduler import Scheduler
-from scheduler.spotlight_scheduler import spotlightScheduler
-from scheduler.azkaban_scheduler import azkabanScheduler
+from scheduler.spotlight_scheduler import spotlight_scheduler
+from scheduler.azkaban_scheduler import azkaban_scheduler
 
 
 class SchedulerFactory:
@@ -11,30 +11,27 @@ class SchedulerFactory:
     def submit_flow(flow):
         scheduler = None
         if flow.flow_scheduler == 'default':
-            scheduler = spotlightScheduler
+            scheduler = spotlight_scheduler
             flow.flow_scheduler_inst = scheduler
         elif flow.flow_scheduler == 'azkaban':
-            scheduler = azkabanScheduler
-            flow.flow_scheduler_inst = azkabanScheduler
+            scheduler = azkaban_scheduler
+            flow.flow_scheduler_inst = azkaban_scheduler
         return scheduler
 
     @staticmethod
     def run_flow(flow_id):
         flow_status = None
-        if flow_id in spotlightScheduler.scheduler_pending_flows:
-            flow_status = spotlightScheduler.run(flow_id)
-        elif flow_id in azkabanScheduler.scheduler_pending_flows:
-            flow_status = azkabanScheduler.run(flow_id)
+        if flow_id in spotlight_scheduler.scheduler_pending_flows:
+            flow_status = spotlight_scheduler.run(flow_id)
+        elif flow_id in azkaban_scheduler.scheduler_pending_flows:
+            flow_status = azkaban_scheduler.run(flow_id)
 
         return flow_status
 
     @staticmethod
     def shutdown():
         try:
-            spotlightScheduler.shutdown()
-            azkabanScheduler.shutdown()
+            spotlight_scheduler.shutdown()
+            azkaban_scheduler.shutdown()
         except Exception as e:
             print(e)
-
-
-    

@@ -22,6 +22,8 @@ class SpotlightScheduler(Scheduler):
     
     def submit(self, flow):
         self.scheduler_pending_flows[flow.flow_id] = flow
+        flow.flow_status = FlowStatus.PENDING
+        return flow.flow_status
 
     def get_status(self, flow_id):
         if flow_id in self.scheduler_failded_flows:
@@ -53,4 +55,4 @@ class SpotlightScheduler(Scheduler):
         self.scheduler_process_manager.shutdown()
     
     
-spotlightScheduler = SpotlightScheduler()
+spotlight_scheduler = SpotlightScheduler()

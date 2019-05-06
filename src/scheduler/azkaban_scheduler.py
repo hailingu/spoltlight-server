@@ -173,4 +173,4 @@ class AzkabanFlowReadAndWriteHelper:
         
         return prefix_space
 
-azkabanScheduler = AzkabanScheduler()
+azkaban_scheduler = AzkabanScheduler()
