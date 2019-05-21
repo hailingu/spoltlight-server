@@ -11,3 +11,7 @@ This is a backend for the splotlight project. This project runs in python 3.7.
     pip install flask
     pip install flask_cors
     pip install pyspark
+
+## Run
+   
+   python src/main.py
