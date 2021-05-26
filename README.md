@@ -1,4 +1,4 @@
-# spoltlight-server
+# spotlight-server
 
 This is a backend for the splotlight project. This project runs in python 3.7.
 
